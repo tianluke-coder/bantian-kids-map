@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="4WSK2Ipz4sdmUko2zdQPJf">
+<head data-page-node-id="trkwGjYzAZqAmt83I2hCrn">
+<meta charset="utf-8" data-page-node-id="BGRMYGJbwgC1FLF31Z4Fts">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="hQCnkdJllU9wC3am8bhLfC">
+<title>坂田机器人小镇 · 儿童版地图骨架</title>
+<link href="assets/fonts/zcool-kuaile-400.css" rel="stylesheet" data-page-node-id="Bex0QyuA1HXRGfrHuGl6bk">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; overflow-x: hidden; }
+  #map { width: 100%; height: 100vh; }
+  .cute-font { font-family: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .banner {
+    position: absolute; top: 16px; left: 16px; z-index: 1100;
+    background: #FFFFFF; border: 1px solid #ED93B1; border-radius: 16px;
+    padding: 12px 18px; max-width: 300px;
+  }
+  .banner .mascot {
+    position: absolute; right: -30px; top: -30px; width: 76px; height: 76px;
+    border-radius: 50%; background: #FFFFFF; border: 2px solid #ED93B1;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12); object-fit: cover;
+  }
+  .banner .banner-art {
+    display: block; width: 100%; border-radius: 10px; margin-top: 10px;
+    border: 1px solid #ED93B1;
+  }
+  .banner h1 { margin: 0; font-size: 18px; color: #72243E; }
+  .banner p { margin: 4px 0 0; font-size: 12px; color: #993556; line-height: 1.5; }
+  .mode-btn {
+    position: absolute; top: 16px; right: 16px; z-index: 1100;
+    border: none; border-radius: 999px; padding: 12px 22px; font-size: 14px;
+    min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: #7F77DD; color: #FFFFFF; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  }
+  .mode-btn:active { transform: scale(.96); }
+  .note {
+    position: absolute; left: 16px; bottom: 16px; z-index: 1100;
+    background: rgba(255,255,255,.92); border: 1px solid #AFA9EC; border-radius: 10px;
+    padding: 6px 12px; font-size: 11px; color: #3C3489; max-width: 320px; line-height: 1.5;
+  }
+  .overlay {
+    position: absolute; inset: 0; z-index: 1200; display: none;
+    align-items: center; justify-content: center; background: #F1EFE8;
+  }
+  .overlay .card {
+    background: #FFFFFF; border: 1px solid #ED93B1; border-radius: 16px;
+    padding: 24px 28px; max-width: 420px; margin: 16px; line-height: 1.7;
+    font-size: 13px; color: #72243E;
+  }
+  .overlay .card h2 { margin: 0 0 8px; font-size: 16px; }
+  .overlay .card code { background: #FBEAF0; border-radius: 4px; padding: 1px 6px; }
+  #errBanner {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 1300;
+    display: none; background: #FCEBEB; border: 1px solid #E24B4A; border-radius: 10px;
+    padding: 8px 14px; font-size: 12px; color: #791F1F; max-width: 70%;
+  }
+  #keyBox { margin-top: 12px; }
+  #keyInput {
+    width: 100%; box-sizing: border-box; padding: 8px 10px;
+    border: 1px solid #AFA9EC; border-radius: 8px; font-size: 13px; margin-bottom: 8px;
+  }
+  #keySave {
+    border: none; border-radius: 999px; padding: 12px 16px; font-size: 13px;
+    min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: #7F77DD; color: #FFFFFF; cursor: pointer;
+  }
+  .link-btn {
+    border: none; background: none; color: #993556; font-size: 12px;
+    cursor: pointer; margin-left: 8px; text-decoration: underline;
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  /* ===== 叙事层：POI 卡片 / 彩蛋提示 / 荣誉徽章 ===== */
+  .poi-card, .badge-card {
+    position: relative;
+    background: #FFFFFF; border: 2px solid #ED93B1; border-radius: 16px;
+    padding: 20px 24px 16px; max-width: 320px; margin: 16px; text-align: center;
+    box-shadow: 0 4px 16px rgba(114,36,62,.15);
+  }
+  .poi-card::before, .badge-card::before {
+    content: ''; position: absolute; inset: 4px; border: 1px solid #AFA9EC;
+    border-radius: 12px; pointer-events: none;
+  }
+  .poi-card .mascot-face { width: 72px; height: 72px; border-radius: 50%; border: 2px solid #AFA9EC; background: #FBEAF0; object-fit: cover; }
+  .poi-card h3 { margin: 8px 0 4px; font-size: 17px; color: #72243E; }
+  .poi-card .slot {
+    display: inline-block; background: #7F77DD; color: #FFFFFF; font-size: 12px;
+    border-radius: 999px; padding: 3px 12px; margin: 2px 0 8px;
+  }
+  .poi-card .oneliner { margin: 4px 0 0; font-size: 14px; color: #993556; }
+  .poi-card .quote {
+    margin: 10px 0 0; font-size: 13px; color: #3C3489; line-height: 1.6;
+    background: #F1EFE8; border-radius: 10px; padding: 8px 12px;
+  }
+  .poi-card .quote::before { content: '「'; color: #AFA9EC; }
+  .poi-card .quote::after { content: '」'; color: #AFA9EC; }
+  .poi-card .card-close { margin-top: 12px; }
+  .badge-card .badge-medal {
+    width: 108px; height: 108px; border-radius: 50%; margin: 0 auto 8px;
+    border: 3px solid #EF9F27; background: #FFF6E5; object-fit: cover;
+    box-shadow: 0 0 0 4px #FBEAF0;
+  }
+  .badge-card h3 { margin: 4px 0 6px; font-size: 19px; color: #72243E; }
+  .badge-card p { margin: 4px 0 0; font-size: 13px; color: #993556; line-height: 1.7; }
+  .badge-card .card-close { margin-top: 14px; }
+  .card-close {
+    border: none; border-radius: 999px; padding: 12px 24px; font-size: 14px;
+    min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: #7F77DD; color: #FFFFFF; cursor: pointer;
+  }
+  .card-close:active { transform: scale(.96); }
+  #eggToast {
+    position: absolute; top: 76px; left: 50%; transform: translateX(-50%); z-index: 1250;
+    display: none; background: #FFFFFF; border: 2px solid #97C459; border-radius: 999px;
+    padding: 8px 18px; font-size: 13px; color: #2F5B1B; max-width: 80%;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  }
+  #eggCounter {
+    position: absolute; right: 16px; bottom: 16px; z-index: 1100;
+    background: #FFFFFF; border: 2px solid #97C459; border-radius: 999px;
+    padding: 6px 14px; font-size: 12px; color: #2F5B1B;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  }
+  /* ===== 移动端适配 ===== */
+  @media (max-width: 640px) {
+    .note { max-width: 46vw; font-size: 10px; }
+    .banner { max-width: calc(100vw - 32px); }
+    .banner .mascot { right: 10px; top: 10px; width: 56px; height: 56px; }
+    .banner h1 { padding-right: 64px; }
+    #eggToast { font-size: 12px; padding: 8px 14px; top: 88px; }
+    .poi-card, .badge-card { max-width: calc(100vw - 32px); }
+  }
+  /* ===== 儿童模式：POI 卡片字号变大（标签常显见 JS 图层切换） ===== */
+  body.kid-mode .poi-card .mascot-face { width: 88px; height: 88px; }
+  body.kid-mode .poi-card h3 { font-size: 20px; }
+  body.kid-mode .poi-card .slot { font-size: 13px; }
+  body.kid-mode .poi-card .oneliner { font-size: 16px; }
+  body.kid-mode .poi-card .quote { font-size: 15px; }
+  /* ===== 横幅折叠（地图放大时不占空间） ===== */
+  .banner-head { display: flex; align-items: flex-start; gap: 8px; }
+  .banner-head h1 { flex: 1; }
+  .banner-toggle {
+    border: none; background: #FBEAF0; color: #993556; font-size: 12px;
+    border-radius: 999px; padding: 6px 12px; cursor: pointer; flex: none;
+    min-height: 32px;
+  }
+  .banner.collapsed { padding: 10px 14px; }
+  .banner.collapsed .banner-body { display: none; }
+  .banner.collapsed .mascot { width: 44px; height: 44px; right: -14px; top: -14px; }
+  /* ===== 地图工具按钮（徽章图鉴 / 路线） ===== */
+  .map-tools {
+    position: absolute; right: 16px; bottom: 64px; z-index: 1100;
+    display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+  }
+  .tool-btn {
+    border: none; border-radius: 999px; padding: 10px 16px; font-size: 13px;
+    min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: #FFFFFF; color: #72243E; cursor: pointer;
+    border: 2px solid #ED93B1; box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  }
+  .tool-btn:active { transform: scale(.96); }
+  /* ===== 徽章图鉴 ===== */
+  .album-card {
+    background: #FFFFFF; border: 2px solid #ED93B1; border-radius: 16px;
+    padding: 20px 20px 16px; max-width: 460px; width: calc(100vw - 32px);
+    max-height: calc(100vh - 80px); overflow-y: auto; text-align: center;
+  }
+  .album-card h3 { margin: 0; font-size: 18px; color: #72243E; }
+  .album-sub { margin: 4px 0 12px; font-size: 12px; color: #993556; }
+  .album-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px;
+  }
+  .album-cell {
+    background: #F7F5FA; border: 1px solid #E5E0F0; border-radius: 10px;
+    padding: 8px 4px 6px; text-align: center;
+  }
+  .album-cell img { width: 40px; height: 40px; }
+  .album-cell .cell-name {
+    display: block; font-size: 10px; color: #3C3489; line-height: 1.3;
+    margin-top: 4px; word-break: break-all;
+  }
+  .album-cell .cell-state { display: block; font-size: 10px; margin-top: 2px; color: #B0AAC6; }
+  .album-cell.got { background: #FFF6E5; border-color: #EF9F27; }
+  .album-cell.got .cell-state { color: #B87A12; font-weight: bold; }
+  .album-cell.locked img { filter: grayscale(1); opacity: .55; }
+  /* ===== 路线面板 ===== */
+  .route-panel {
+    position: absolute; left: 16px; bottom: 16px; z-index: 1150; width: 264px;
+    display: none;
+    background: #FFFFFF; border: 2px solid #7F77DD; border-radius: 16px;
+    padding: 14px 16px; box-shadow: 0 4px 14px rgba(60,52,137,.18);
+    max-height: calc(100vh - 120px); overflow-y: auto;
+  }
+  .route-head { display: flex; align-items: center; justify-content: space-between; }
+  .route-head strong { font-size: 15px; color: #3C3489; }
+  .route-close {
+    border: none; background: #F1EFE8; color: #3C3489; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 16px; cursor: pointer; line-height: 1;
+  }
+  .route-tip { margin: 6px 0 10px; font-size: 11px; color: #6E68A6; }
+  .route-list { display: flex; flex-direction: column; gap: 8px; }
+  .route-item {
+    border: 2px solid #E5E0F0; border-radius: 12px; padding: 10px 12px;
+    cursor: pointer; background: #FBFAFD; text-align: left;
+  }
+  .route-item:active { transform: scale(.98); }
+  .route-item .ri-name { font-size: 14px; font-weight: bold; }
+  .route-item .ri-meta { display: block; font-size: 11px; color: #6E68A6; margin-top: 2px; }
+  .route-item .ri-desc { display: block; font-size: 11px; color: #993556; margin-top: 4px; line-height: 1.5; }
+  .facility-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .facility-label { font-size: 11px; color: #6E68A6; }
+  .facility-chip {
+    border: 1px solid #AFA9EC; background: #FFFFFF; color: #3C3489;
+    border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+    min-height: 32px;
+  }
+  .facility-chip.on { background: #7F77DD; color: #FFFFFF; border-color: #7F77DD; }
+  .route-active { margin-top: 12px; border-top: 1px dashed #AFA9EC; padding-top: 10px; }
+  .route-active-head { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #72243E; }
+  .route-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+  .route-meta { font-size: 11px; color: #6E68A6; margin-left: auto; }
+  .route-desc { margin: 6px 0 10px; font-size: 11px; color: #993556; line-height: 1.6; }
+  @media (max-width: 640px) {
+    .route-panel { width: calc(100vw - 32px); max-width: 320px; }
+    .album-grid { grid-template-columns: repeat(3, 1fr); }
+    .map-tools { bottom: 76px; }
+  }
+  /* ===== 微调面板：非阻塞浮动卡片，打开时地图仍可点击 ===== */
+  #locPanel {
+    inset: auto; left: 16px; bottom: 80px; width: 286px;
+    background: transparent; z-index: 1160; padding: 0;
+  }
+  #locPanel .card { width: 100%; box-shadow: 0 6px 18px rgba(60,52,137,.20); }
+  #locPanel h2 { color: #3C3489; margin: 0 0 6px; }
+  #locPanel .loc-hint { font-size: 11px; color: #6E68A6; line-height: 1.5; margin: 0 0 6px; }
+  #locPanel .loc-current { font-size: 12px; color: #72243E; background: #F7F5FA;
+    border: 1px solid #E5E0F0; border-radius: 8px; padding: 6px 8px; margin: 6px 0; line-height: 1.4; word-break: break-all; }
+  @media (max-width: 640px) {
+    #locPanel { width: calc(100vw - 32px); max-width: 320px; bottom: 84px; }
+  }
+  /* ===== 地点编辑器：非阻塞浮动卡片，开着面板也能点地图取坐标 ===== */
+  #editPanel {
+    inset: auto; left: 16px; bottom: 16px; width: 344px;
+    background: transparent; z-index: 1210; padding: 0;
+  }
+  #editPanel .card {
+    width: 100%; max-width: none; margin: 0; padding: 14px 16px 12px;
+    max-height: calc(100vh - 88px); overflow-y: auto; text-align: left;
+    line-height: 1.5; box-shadow: 0 8px 24px rgba(60,52,137,.22);
+  }
+  .edit-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .edit-head strong { font-size: 15px; color: #3C3489; }
+  .edit-x {
+    border: none; background: #F1EFE8; color: #3C3489; width: 30px; height: 30px;
+    border-radius: 50%; font-size: 16px; cursor: pointer; line-height: 1;
+  }
+  .edit-hint { font-size: 11px; color: #6E68A6; margin: 0 0 8px; line-height: 1.55; }
+  .edit-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+  .edit-tab {
+    flex: 1; border: 1px solid #AFA9EC; background: #FFFFFF; color: #3C3489;
+    border-radius: 999px; padding: 7px 4px; font-size: 12px; cursor: pointer; min-height: 34px;
+  }
+  .edit-tab.on { background: #7F77DD; color: #FFFFFF; border-color: #7F77DD; }
+  .edit-field { margin-bottom: 8px; }
+  .edit-field > label { display: block; font-size: 11px; color: #6E68A6; margin-bottom: 3px; }
+  .edit-field input[type=text], .edit-field select {
+    width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #AFA9EC;
+    border-radius: 8px; font-size: 13px; color: #3C3489; background: #FFFFFF;
+    font-family: inherit;
+  }
+  .edit-seg { display: flex; gap: 6px; }
+  .edit-seg button {
+    flex: 1; border: 1px solid #AFA9EC; background: #FFFFFF; color: #3C3489;
+    border-radius: 8px; padding: 8px 2px; font-size: 12px; cursor: pointer; min-height: 36px;
+  }
+  .edit-seg button.on { background: #EDE9FE; border-color: #7F77DD; color: #5B21B6; font-weight: bold; }
+  .edit-swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+  .edit-swatch {
+    width: 26px; height: 26px; border-radius: 50%; border: 2px solid #FFFFFF;
+    box-shadow: 0 0 0 1px #DDD8EA; cursor: pointer; padding: 0;
+  }
+  .edit-swatch.on { box-shadow: 0 0 0 3px #7F77DD; }
+  .edit-coord {
+    font-size: 12px; color: #72243E; background: #F7F5FA; border: 1px solid #E5E0F0;
+    border-radius: 8px; padding: 6px 8px; word-break: break-all;
+  }
+  .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .edit-primary {
+    flex: 1; border: none; border-radius: 999px; padding: 11px 14px; font-size: 13px;
+    min-height: 44px; background: #7F77DD; color: #FFFFFF; cursor: pointer;
+  }
+  .edit-ghost {
+    border: 1px solid #AFA9EC; background: #FFFFFF; color: #3C3489; border-radius: 999px;
+    padding: 11px 14px; font-size: 13px; min-height: 44px; cursor: pointer; flex: 1;
+  }
+  .edit-foot {
+    border-top: 1px dashed #DDD8EA; margin-top: 10px; padding-top: 8px;
+    display: flex; flex-wrap: wrap; gap: 4px 10px;
+  }
+  .edit-foot button {
+    border: none; background: none; color: #993556; font-size: 11px;
+    text-decoration: underline; cursor: pointer; padding: 4px 0;
+  }
+  .edit-row {
+    display: flex; align-items: center; gap: 6px; padding: 7px 0;
+    border-bottom: 1px dashed #EEE9F5; font-size: 12px; color: #3C3489;
+  }
+  .edit-row .ei-name { flex: 1; word-break: break-all; }
+  .edit-row .ei-tag {
+    font-size: 10px; color: #6E68A6; background: #F1EFE8;
+    border-radius: 999px; padding: 2px 8px; flex: none;
+  }
+  .edit-row .ei-edit {
+    border: 1px solid #AFA9EC; background: #FFFFFF; color: #3C3489;
+    border-radius: 999px; font-size: 11px; padding: 4px 10px; cursor: pointer; flex: none;
+  }
+  .edit-row .ei-del {
+    border: none; background: #FCEBEB; color: #B42318;
+    border-radius: 999px; font-size: 11px; padding: 4px 10px; cursor: pointer; flex: none;
+  }
+  @media (max-width: 640px) {
+    #editPanel { width: calc(100vw - 32px); max-width: 344px; bottom: 12px; }
+  }
+</style>
+<!-- 地图 Key 不进仓库：本机放一份 map-key.local.js（已被 .gitignore 排除）。
+     从 GitHub clone 下来的人没有这个文件，页面会提示点右下角「Key」自己填一个。
+     模板见 map-key.local.example.js。 -->
+<script src="map-key.local.js"></script>
+<script type="text/javascript">
+  window.KIDS_MAP_KEY = window.KIDS_MAP_KEY || '';
+  window._TMapSecurityConfig = {
+    serviceHost: 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__',
+  };
+  (function () {
+    try { window.localStorage.getItem('__probe'); return; } catch (e) {}
+    try {
+      var mem = {};
+      Object.defineProperty(window, 'localStorage', {
+        configurable: true,
+        get: function () {
+          return {
+            getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+            setItem: function (k, v) { mem[k] = String(v); },
+            removeItem: function (k) { delete mem[k]; },
+            clear: function () { mem = {}; },
+            key: function (i) { return Object.keys(mem)[i] || null; },
+            get length() { return Object.keys(mem).length; }
+          };
+        }
+      });
+    } catch (e2) {}
+  })();
+  function showErr(msg) {
+    var el = document.getElementById('errBanner');
+    if (!el) { return; }
+    el.textContent = '页面出错：' + msg;
+    el.style.display = 'block';
+  }
+  window.addEventListener('error', function (e) { showErr(e.message || '未知错误'); });
+  /* 移动端地址栏适配：用真实视口高度覆盖 100vh（桌面端两者一致，无副作用） */
+  (function () {
+    function fitMapHeight() {
+      try {
+        var h = window.innerHeight;
+        if (h && h > 0) { document.getElementById('map').style.height = h + 'px'; }
+      } catch (e) {}
+    }
+    window.addEventListener('resize', fitMapHeight);
+    window.addEventListener('orientationchange', fitMapHeight);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fitMapHeight); }
+    else { fitMapHeight(); }
+  })();
+</script>
+</head>
+<body data-page-node-id="aCIvGwHtG6g7k6AyyD9sGb">
+<div id="map" data-page-node-id="6hPE2mAlPit3u5ew93BYRC"></div>
+<div class="banner" id="bannerCard" data-page-node-id="xpsRxoaT1nqm8g1nXBDjcY">
+  <img class="mascot" id="mascotImg" src="assets/icons/mascot-welcome.png" alt="坂田小队长">
+  <div class="banner-head">
+    <h1 class="cute-font" data-page-node-id="kmIJGzXLpIEyrSWhv3MvjD">坂田机器人小镇 · 机器人上班的一天</h1>
+    <button class="banner-toggle" id="bannerToggle" aria-label="收起或展开横幅">收起</button>
+  </div>
+  <div class="banner-body" id="bannerBody">
+    <p data-page-node-id="DavxynkuRODjEA8o8IMPAD">跟着机器人过一天：早上商店开门、中午剧场演出、下午集章、晚上大楼亮灯</p>
+    <img class="banner-art" src="assets/art/banner-street.jpg" alt="机器人大道横幅插画">
+  </div>
+</div>
+<button class="mode-btn cute-font" id="modeBtn" data-page-node-id="6hZbBEDLPcRgI0LKfznuu3">切换到儿童模式</button>
+<div class="note" data-page-node-id="Brt7yUyvJ4VqNW4pb8sRbz">13 个盒子建筑常显在地图上：A-F 沿雅丽路西侧由南向北、G 在 F 路对面、H 鸿蒙未来之家在 A 旁，另含两个6S店、剧场、康养、生态；洗手间/地铁口为示意位置待实地确认；步行路线调用腾讯地图接口</div>
+<div id="errBanner" data-page-node-id="kbfZBGZMvUrWZ4OF218IfO"></div>
+<div id="eggToast" data-page-node-id="eggToast"></div>
+<div class="map-tools">
+  <button class="tool-btn cute-font" id="routeBtn">路线</button>
+  <button class="tool-btn cute-font" id="badgeBtn">徽章 0/13</button>
+  <button class="tool-btn cute-font" id="locBtn">微调</button>
+  <button class="tool-btn cute-font" id="editBtn">编辑</button>
+  <button class="tool-btn cute-font" id="keyBtn">Key</button>
+</div>
+<div class="overlay" id="badgeAlbumWrap" data-page-node-id="badgeAlbumWrap">
+  <div class="album-card" data-page-node-id="albumCard">
+    <h3 class="cute-font" id="albumTitle">徽章图鉴 0/13</h3>
+    <p class="album-sub">点亮的已经收下，灰色的还没找到</p>
+    <div class="album-grid" id="albumGrid"></div>
+    <button class="card-close cute-font" id="albumClose">知道啦</button>
+  </div>
+</div>
+<div class="route-panel" id="routePanel" data-page-node-id="routePanel">
+  <div class="route-head">
+    <strong class="cute-font">小镇路线</strong>
+    <button class="route-close" id="routeClose" aria-label="关闭路线面板">×</button>
+  </div>
+  <p class="route-tip">选一条路线，跟着走就能逛遍盒子建筑</p>
+  <div class="route-list" id="routeList"></div>
+  <div class="facility-row">
+    <span class="facility-label">设施标注</span>
+    <button class="facility-chip on" id="facMall" data-type="mall">商场</button>
+    <button class="facility-chip on" id="facWc" data-type="wc">洗手间</button>
+    <button class="facility-chip on" id="facMetro" data-type="metro">地铁口</button>
+  </div>
+  <div class="route-active" id="routeActive" style="display:none">
+    <div class="route-active-head">
+      <span class="route-dot" id="routeDot"></span>
+      <strong id="routeName">亲子路线</strong>
+      <span class="route-meta" id="routeMeta"></span>
+    </div>
+    <p class="route-desc" id="routeDesc"></p>
+    <button class="card-close cute-font" id="routeExit">退出路线</button>
+  </div>
+</div>
+<div class="overlay" id="poiCardWrap" data-page-node-id="poiCardWrap">
+  <div class="poi-card" id="poiCard" data-page-node-id="poiCard">
+    <img class="mascot-face" id="poiFace" src="assets/icons/mascot-welcome.png" alt="机器人表情">
+    <h3 class="cute-font" id="poiName">机器人剧场</h3>
+    <span class="slot" id="poiSlot">12:00 · 剧场时间</span>
+    <p class="oneliner" id="poiOneLiner">机器人跳舞打架的地方</p>
+    <p class="quote" id="poiLine">午场演出开始！</p>
+    <button class="card-close cute-font" id="poiClose">知道啦</button>
+  </div>
+</div>
+<div class="overlay" id="badgeWrap" data-page-node-id="badgeWrap">
+  <div class="badge-card" data-page-node-id="badgeCard">
+    <img class="badge-medal" src="assets/icons/mascot-cheer.png" alt="荣誉徽章">
+    <h3 class="cute-font">机器人小镇荣誉居民</h3>
+    <p id="badgeAllText">你集齐了机器大道两旁<br>全部 13 个盒子建筑的徽章！<br>机器人小镇记住了你的名字，<br>随时欢迎回来玩。</p>
+    <button class="card-close cute-font" id="badgeClose">收下徽章</button>
+  </div>
+</div>
+<div class="overlay" id="fallback" data-page-node-id="a8idVotpfa2x6re0wwYLcr">
+  <div class="card" data-page-node-id="U6ukvLGGNhDvFW93McK89p">
+    <h2 class="cute-font" data-page-node-id="HjUDYZayCHohpoFAbNHeMK">底图没有加载出来</h2>
+    <p id="fallbackMsg">当前是<strong>本地/外部浏览器打开</strong>模式：WorkBuddy 的免 key 代理在这里不存在，所以地图是空白的。</p>
+    <p>解决办法：<br>
+    1. 回到 <strong>WorkBuddy 预览面板</strong>打开本文件（零配置）；<br>
+    2. 点下面的按钮，粘贴你在腾讯位置服务申请的 Key（存在本浏览器，下次打开自动生效）；<br>
+    3. 或者把 Key 发给小八，帮你写进文件顶部（换电脑也能用）。</p>
+    <button class="card-close cute-font" id="fallbackKeyBtn">去设置 Key</button>
+  </div>
+</div>
+<div class="overlay" id="keySetting">
+  <div class="card">
+    <h2 class="cute-font">设置地图 Key</h2>
+    <p id="keySettingMsg">填你自己在<a href="https://lbs.qq.com/" target="_blank" rel="noopener">腾讯位置服务</a>申请的 Key，保存在这台设备的浏览器里，下次打开自动生效。<br>
+    这个 Key 需要开通 <strong>WebService API</strong> 权限，并把当前域名加进<strong>域名白名单</strong>：本地预览填 <code>127.0.0.1</code>，线上填 <code>bantian-robot-kids-map.app.workbuddy.host</code>。</p>
+    <div id="keyBox">
+      <input id="keyInput" type="text" placeholder="粘贴腾讯位置服务 Key（32 位）" autocomplete="off">
+      <button id="keySave" class="cute-font">保存并重载</button>
+      <button id="keyClear" class="link-btn">清除已存 Key</button>
+    </div>
+    <button class="card-close cute-font" id="keySettingClose" style="margin-top:14px">关闭</button>
+  </div>
+</div>
+<div class="overlay" id="locPanel">
+  <div class="card">
+    <h2 class="cute-font">微调位置</h2>
+    <p class="loc-hint">先在下面选一个点，再到地图上点一下，把它放到准确的位置（最好贴着机器人大道的一侧）。改动会自动记在这台设备，也能复制坐标发给小八写进文件。</p>
+    <select id="locSelect" style="width:100%;box-sizing:border-box;padding:8px 10px;margin:6px 0;border-radius:8px;border:1px solid #AFA9EC;font-size:13px;"></select>
+    <div id="locCurrent" class="loc-current">还没选点</div>
+    <div style="margin:8px 0">
+      <button id="locCopy" class="cute-font" style="border:none;border-radius:999px;padding:10px 14px;font-size:13px;min-height:40px;background:#7F77DD;color:#fff;cursor:pointer;">复制全部坐标</button>
+      <button id="locExit" class="link-btn" style="margin-left:8px">退出微调</button>
+      <button id="locReset" class="link-btn" style="margin-left:8px;color:#B42318">重置微调</button>
+    </div>
+    <div id="locList" style="font-size:11px;line-height:1.5;margin-top:6px;max-height:180px;overflow:auto;color:#5a4a6a;"></div>
+  </div>
+</div>
+<div class="overlay" id="editPanel">
+  <div class="card">
+    <div class="edit-head">
+      <strong class="cute-font">地点编辑器</strong>
+      <button class="edit-x" id="editClose" aria-label="关闭编辑器">×</button>
+    </div>
+    <p class="edit-hint">不用改代码就能加新地点：填名称 → 选图形颜色 → 点地图定位 → 保存。改动只存在这台浏览器；想让它出现在所有人的地图上，点最下面「复制 JSON」发给小八写进文件。</p>
+    <div class="edit-tabs">
+      <button class="edit-tab on" id="editTabAdd">新增地点</button>
+      <button class="edit-tab" id="editTabList">已有地点</button>
+    </div>
+    <div id="editFormPane">
+      <div class="edit-field">
+        <label>地点类型</label>
+        <div class="edit-seg" id="editKind">
+          <button type="button" data-kind="box" class="on">盒子建筑</button>
+          <button type="button" data-kind="facility">服务设施</button>
+          <button type="button" data-kind="poi">叙事点</button>
+        </div>
+      </div>
+      <div class="edit-field">
+        <label>名称（必填）</label>
+        <input type="text" id="editName" placeholder="例：机器人咖啡店" autocomplete="off">
+      </div>
+      <div class="edit-field edit-only-box">
+        <label>字母 / 编号（可留空，最多 2 个字符）</label>
+        <input type="text" id="editLetter" maxlength="2" placeholder="例：I">
+      </div>
+      <div class="edit-field edit-only-box">
+        <label>图形</label>
+        <select id="editShape"></select>
+      </div>
+      <div class="edit-field edit-only-fac" style="display:none">
+        <label>设施类型</label>
+        <select id="editFacType">
+          <option value="mall">商场</option>
+          <option value="wc">洗手间</option>
+          <option value="metro">地铁口</option>
+        </select>
+      </div>
+      <div class="edit-field edit-color">
+        <label>颜色</label>
+        <div class="edit-swatches" id="editSwatches"></div>
+      </div>
+      <div class="edit-field">
+        <label>一句话介绍</label>
+        <input type="text" id="editOneLiner" placeholder="例：会做拿铁的机器人" autocomplete="off">
+      </div>
+      <div class="edit-field">
+        <label>机器人台词</label>
+        <input type="text" id="editLine" placeholder="例：您的咖啡，请慢用！" autocomplete="off">
+      </div>
+      <div class="edit-field">
+        <label>位置</label>
+        <div class="edit-coord" id="editCoord">还没选位置</div>
+        <div class="edit-actions" style="margin-top:6px">
+          <button type="button" class="edit-ghost" id="editPick">在地图上点选位置</button>
+        </div>
+      </div>
+      <div class="edit-actions">
+        <button type="button" class="edit-primary" id="editSave">保存地点</button>
+        <button type="button" class="edit-ghost" id="editCancel">重填</button>
+      </div>
+    </div>
+    <div id="editListPane" style="display:none">
+      <div id="editList"></div>
+    </div>
+    <div class="edit-foot">
+      <button type="button" id="editExport">复制 JSON（交给小八写进文件）</button>
+      <button type="button" id="editWipe">清空我加的地点</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var injected = window._TMapSecurityConfig.serviceHost.indexOf('__WB_') === -1;
+  var savedKey = '';
+  try { savedKey = localStorage.getItem('kidsMapKey') || ''; } catch (e) {}
+  // 用户在设置面板里保存的 Key 优先于文件里内置的共享 Key（共享 Key 有每日配额上限，
+  // 打满后步行路线会全部降级，所以只要填过自己的 Key 就一律用自己的）。
+  var key = (savedKey || window.KIDS_MAP_KEY || '').trim();
+
+  // ===== 微调位置：记住用户在本机手动定的坐标，覆盖内置默认值 =====
+  var LOC_KEY = 'kidsMapLoc';
+  // 文件里的坐标一改（版本号跟着改），这台设备上的旧微调记忆就自动作废。
+  // 否则旧记忆会一直盖着新坐标，表现就是「每次打开都感觉位置不对」。
+  var LOC_VER = '2026-10-30c';
+  var locMode = false;
+  var locTarget = null;
+  function loadLocOverrides() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(LOC_KEY) || 'null');
+      if (!raw || typeof raw !== 'object' || raw.__ver !== LOC_VER) {
+        if (raw) { try { localStorage.removeItem(LOC_KEY); } catch (e2) {} }
+        return {};
+      }
+      return raw;
+    } catch (e) { return {}; }
+  }
+  var locOverrides = loadLocOverrides();
+
+  function openKeySetting(msg) {
+    var msgEl = document.getElementById('keySettingMsg');
+    if (msg && msgEl) { msgEl.innerHTML = msg; }
+    var input = document.getElementById('keyInput');
+    if (input && !input.value) { input.value = key || ''; }
+    document.getElementById('keySetting').style.display = 'flex';
+  }
+  function closeKeySetting() { document.getElementById('keySetting').style.display = 'none'; }
+
+  var keyBtn = document.getElementById('keyBtn');
+  if (keyBtn) { keyBtn.addEventListener('click', function () { openKeySetting(); }); }
+  var fallbackKeyBtn = document.getElementById('fallbackKeyBtn');
+  if (fallbackKeyBtn) { fallbackKeyBtn.addEventListener('click', function () { openKeySetting(); }); }
+  var keySettingClose = document.getElementById('keySettingClose');
+  if (keySettingClose) { keySettingClose.addEventListener('click', closeKeySetting); }
+  var keySettingWrap = document.getElementById('keySetting');
+  if (keySettingWrap) {
+    keySettingWrap.addEventListener('click', function (e) { if (e.target === this) { closeKeySetting(); } });
+  }
+
+  function showFallback(msg) {
+    var msgEl = document.getElementById('fallbackMsg');
+    if (msg && msgEl) { msgEl.innerHTML = msg; }
+    document.getElementById('fallback').style.display = 'flex';
+  }
+
+  var saveBtn = document.getElementById('keySave');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function () {
+      var v = (document.getElementById('keyInput').value || '').trim();
+      if (!v) { alert('先粘贴 Key 再保存'); return; }
+      try { localStorage.setItem('kidsMapKey', v); } catch (e) {}
+      location.reload();
+    });
+  }
+  var clearBtn = document.getElementById('keyClear');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      try { localStorage.removeItem('kidsMapKey'); } catch (e) {}
+      location.reload();
+    });
+  }
+
+  function loadSdk(keyParam) {
+    var s = document.createElement('script');
+    s.src = 'https://map.qq.com/api/gljs?v=1.exp' + (keyParam ? '&key=' + encodeURIComponent(keyParam) : '');
+    s.onload = init;
+    s.onerror = function () {
+      showFallback('SDK 加载失败：Key 可能无效，或域名白名单没有覆盖当前域名。请检查后重试，或把 Key 发给小八帮你写进文件。');
+    };
+    document.head.appendChild(s);
+  }
+
+  if (injected) { loadSdk(''); return; }
+  if (!key) { showFallback(); return; }
+  delete window._TMapSecurityConfig;
+  loadSdk(key);
+
+  function init() {
+    try {
+      var CENTER = new TMap.LatLng(22.6038, 114.0614);
+      var map = new TMap.Map('map', { center: CENTER, zoom: 16, viewMode: '2D' });
+
+      function robotIcon(color) {
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">' +
+          '<rect x="18" y="32" width="60" height="44" rx="14" fill="' + color + '"/>' +
+          '<circle cx="48" cy="22" r="14" fill="' + color + '"/>' +
+          '<line x1="48" y1="10" x2="48" y2="3" stroke="' + color + '" stroke-width="4"/>' +
+          '<circle cx="48" cy="4" r="4" fill="' + color + '"/>' +
+          '<circle cx="41" cy="22" r="4" fill="#FFFFFF"/><circle cx="55" cy="22" r="4" fill="#FFFFFF"/>' +
+          '<circle cx="41" cy="22" r="2" fill="#26215C"/><circle cx="55" cy="22" r="2" fill="#26215C"/>' +
+          '<rect x="40" y="46" width="16" height="8" rx="4" fill="#FFFFFF"/>' +
+          '<circle cx="48" cy="50" r="2.5" fill="#26215C"/>' +
+          '<rect x="30" y="60" width="36" height="6" rx="3" fill="rgba(255,255,255,.55)"/>' +
+          '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+
+      var POIS = [
+        { id: 'avenue',  name: '机器人大道',   lat: 22.602817, lng: 114.061749, color: '#EFC66B', icon: 'assets/icons/poi-avenue.png',
+          timeSlot: '15:00', slotLabel: '集章时间', oneLiner: '机器人每天上班的马路（雅宝路·机器人大道，南北向约120米）',
+          line: '下午茶时间到！在这条路上集满 13 个徽章', mascot: 'assets/icons/mascot-point.png' }
+      ];
+
+      // 机器人大道（真实路名 = 雅宝路·机器人大道1号，星河WORLD 园区内、雅宝地铁站B口旁）两侧盒子建筑 = 徽章，共 13 枚。
+      // 真实地理：机器人大道中线 lng≈114.06165，南北沿雅宝地铁站B口(22.60342)到星河双子塔(22.6048)；
+      // 两个6S店/剧场均按腾讯地图真实POI落位（real 字段），盒子条目坐标则在道路两侧人行道对齐排开避免悬空路中央或彼此叠住。
+      // 布局：A-F 沿西人行道(114.061480)由南向北间距24米；G 在 F 路对面(东人行道114.061820)；H 在 A 路对面；
+      // 康养/生态退到西后排(114.061320)；6S店/AI6S店/剧场按真实坐标对应落位。全部为示意位置，待实地走访用 real 校准。
+      var BOXES = [
+        { id: 'box-fadayou',   letter: 'A1', name: '法大夫法律机器人',  lat: 22.603095, lng: 114.061574, shape: 'scale',  color: '#7F77DD',
+          oneLiner: '会背法条的机器人律师',   line: '别吵架！让机器人法官评评理' },
+        { id: 'box-lingbujian', letter: 'B', name: '机器人零部件超市',  lat: 22.603240, lng: 114.061659, shape: 'puzzle', color: '#EF9F27',
+          oneLiner: '机器人的零件百货店',     line: '少个螺丝？来这里配一颗' },
+        { id: 'box-chengfu',   letter: 'C', name: 'AI城服创新体验馆',   lat: 22.603388, lng: 114.061664, shape: 'wrench', color: '#F2A65A',
+          oneLiner: '打扫城市的机器人助手',   line: '马路扫干净，机器人有功劳' },
+        { id: 'box-jingwu',    letter: 'D', name: '智慧警务空间',       lat: 22.603497, lng: 114.061671, shape: 'shield', color: '#378ADD',
+          oneLiner: '帮警察叔叔巡逻的机器人', line: '眼睛亮晶晶，坏蛋逃不掉' },
+        { id: 'box-jiaoyu',    letter: 'E1', name: 'AI智慧教育展厅',     lat: 22.603657, lng: 114.061681, shape: 'book',   color: '#ED93B1',
+          oneLiner: '会教课的机器人老师',     line: '这道题不会？机器人讲三遍' },
+        { id: 'box-midea',     letter: 'F', name: '美的全屋智能展厅',   lat: 22.603962, lng: 114.061711, shape: 'house',  color: '#F2795B',
+          oneLiner: '会听话的聪明家电',       line: '喊一声，灯就亮啦' },
+        { id: 'box-xinshiqi',  letter: 'G', name: '新石器无人车展厅',   lat: 22.603974, lng: 114.061863, shape: 'truck',  color: '#5DCAA5',
+          oneLiner: '不用人开的送货小车',     line: '嘀嘀！无人车自己认路送快递' },
+        { id: 'box-hongmeng',  letter: 'H', name: '华为鸿蒙未来之家',   lat: 22.603104, lng: 114.061428, shape: 'flower', color: '#4AA8D8',
+          oneLiner: '万物互联的智慧小家',     line: '电器们手拉手，听一句话就开工' },
+        { id: 'box-kangyang',  letter: 'E2', name: '智慧康养Hub',        lat: 22.603815, lng: 114.061649, shape: 'heart',  color: '#97C459',
+          oneLiner: '照顾爷爷奶奶的机器人护工', line: '血压量一量，机器人记得牢' },
+        { id: 'box-shengtai',  letter: 'A2', name: '机器人生态展馆',     lat: 22.603028, lng: 114.061686, shape: 'leaf',   color: '#639922',
+          oneLiner: '机器人怎么被造出来的',   line: '一颗零件一片田野，机器人也有老家' },
+        { id: 'box-robot6s',   letter: '',  name: '机器人6S店',         lat: 22.603659, lng: 114.060724, shape: 'star',   color: '#D85A30',
+          real: '22.603650,114.060527',
+          oneLiner: '机器人的大商场，能看还能玩', line: '叮咚！商店开门啦，小机器人顾客排队来上班' },
+        { id: 'box-ai6s',      letter: '',  name: '人工智能6S店',       lat: 22.603349, lng: 114.061503, shape: 'bolt',   color: '#1D9E75',
+          real: '22.603325,114.061604',
+          oneLiner: '满屋聪明脑瓜的AI小店',   line: 'AI 小店中午不打烊，机器人排着队动脑筋' },
+        { id: 'box-theater',   letter: '',  name: '机器人剧场',         lat: 22.603023, lng: 114.061276, shape: 'play',   color: '#8B5CD6',
+          real: '22.603101,114.061194',
+          oneLiner: '机器人跳舞打架的地方',   line: '午场演出开始！机器人跳舞唱歌从来不累' }
+      ];
+      // 普通地标（不收徽章、但也常显）目前为空，保留结构方便以后加纯参照点
+      var LANDMARKS = [];
+      var badgeFound = {};
+      try {
+        var savedBadges = localStorage.getItem('kidsMapBadges') || '';
+        if (savedBadges) { badgeFound = JSON.parse(savedBadges); }
+      } catch (e) {}
+      // 清洗旧版数据：只保留当前 13 个盒子的收集记录
+      (function () {
+        var valid = {};
+        BOXES.forEach(function (b) { if (badgeFound[b.id]) { valid[b.id] = true; } });
+        badgeFound = valid;
+      })();
+
+      /* ===== 固定路线（亲子 / 老人，站点顺序按步行习惯排） ===== */
+      var ROUTES = [
+        {
+          id: 'route-family', name: '亲子路线', color: '#ED93B1',
+          meta: '15个站点 · 收集全部徽章',
+          desc: '从雅宝地铁站B口出发，沿机器人大道（雅宝路）串起 A1 法大夫、A2 生态、B 零部件、C 城服、D 警务、E1 教育、E2 康养、F 美的、G 新石器等盒子，过马路看 H 鸿蒙、两家6S店和剧场，最后到COCO Park，13 个徽章一网打尽',
+          stops: [
+            { name: '雅宝地铁站B口', lat: 22.603650, lng: 114.060100 },
+            { name: '机器人6S店', lat: 22.603659, lng: 114.060724 },
+            { name: '新石器无人车展厅 G', lat: 22.603974, lng: 114.061863 },
+            { name: '美的全屋智能展厅 F', lat: 22.603962, lng: 114.061711 },
+            { name: '智慧康养Hub E2', lat: 22.603815, lng: 114.061649 },
+            { name: 'AI智慧教育展厅 E1', lat: 22.603657, lng: 114.061681 },
+            { name: '智慧警务空间 D', lat: 22.603497, lng: 114.061671 },
+            { name: 'AI城服创新体验馆 C', lat: 22.603388, lng: 114.061664 },
+            { name: '机器人零部件超市 B', lat: 22.603240, lng: 114.061659 },
+            { name: '法大夫法律机器人 A1', lat: 22.603095, lng: 114.061574 },
+            { name: '机器人生态展馆 A2', lat: 22.603028, lng: 114.061686 },
+            { name: '华为鸿蒙未来之家 H', lat: 22.603104, lng: 114.061428 },
+            { name: '机器人剧场', lat: 22.603023, lng: 114.061276 },
+            { name: '人工智能6S店', lat: 22.603349, lng: 114.061503 },
+            { name: '星河WORLD·COCO Park', lat: 22.603973, lng: 114.060987 }
+          ]
+        },
+        {
+          id: 'route-senior', name: '老人路线', color: '#7F77DD',
+          meta: '5个站点 · 平缓短途',
+          desc: '短而平缓：地铁站B口直达COCO Park（可歇脚），再看剧场和两家6S店，全程慢慢走不累',
+          stops: [
+            { name: '雅宝地铁站B口', lat: 22.603650, lng: 114.060100 },
+            { name: '星河WORLD·COCO Park', lat: 22.603973, lng: 114.060987 },
+            { name: '机器人剧场', lat: 22.603023, lng: 114.061276 },
+            { name: '人工智能6S店', lat: 22.603349, lng: 114.061503 },
+            { name: '机器人6S店', lat: 22.603659, lng: 114.060724 }
+          ]
+        }
+      ];
+      /* ===== 设施标注（商场 / 洗手间 / 地铁口） ===== */
+      /* 两处洗手间已由大卫老师在微调工具里定位并固化，作为正常设施显示（紫色 WC 标）。
+         unlocated:true 的机制保留——将来若有真正定位不到的设施，仍可画灰色「?」占位。 */
+      var FACILITIES = [
+        { id: 'mall-1',  type: 'mall',  name: '星河WORLD·COCO Park（商场）', lat: 22.603973, lng: 114.060987 },
+        { id: 'wc-starlight',  type: 'wc', name: '星光里洗手间', lat: 22.603932, lng: 114.061228 },
+        { id: 'wc-enterprise', type: 'wc', name: '企服中心洗手间', lat: 22.603600, lng: 114.062054 },
+        { id: 'metro-1', type: 'metro', name: '雅宝地铁站B口（10号线）', lat: 22.603650, lng: 114.060100 }
+      ];
+      var FAC_STYLE = {
+        mall:  { color: '#F2795B', label: '商' },
+        wc:    { color: '#8B5CD6', label: 'WC' },
+        metro: { color: '#378ADD', label: '地' }
+      };
+
+      /* ===== 自定义地点（地点编辑器写入 localStorage，启动时并进内置数据） =====
+         编辑器把新项 push 进 BOXES / FACILITIES / POIS（同一对象引用），
+         改字段就等于改数据源，rebuildMarkers() 一刷新就出现——加地点不用再改代码。 */
+      var CUSTOM_KEY = 'kidsMapCustom';
+      function findById(arr, id) {
+        for (var i = 0; i < arr.length; i++) { if (arr[i].id === id) { return arr[i]; } }
+        return null;
+      }
+      function removeById(arr, id) {
+        for (var i = arr.length - 1; i >= 0; i--) { if (arr[i].id === id) { arr.splice(i, 1); } }
+      }
+      function loadCustomData() {
+        var empty = { boxes: [], facilities: [], pois: [] };
+        try {
+          var raw = JSON.parse(localStorage.getItem(CUSTOM_KEY) || 'null');
+          if (!raw || typeof raw !== 'object') { return empty; }
+          return {
+            boxes: Object.prototype.toString.call(raw.boxes) === '[object Array]' ? raw.boxes : [],
+            facilities: Object.prototype.toString.call(raw.facilities) === '[object Array]' ? raw.facilities : [],
+            pois: Object.prototype.toString.call(raw.pois) === '[object Array]' ? raw.pois : []
+          };
+        } catch (e) { return empty; }
+      }
+      var customData = loadCustomData();
+      // 丢掉坐标不完整的脏数据，避免整个标记图层因为一个 NaN 而错位
+      (function cleanCustomData() {
+        ['boxes', 'facilities', 'pois'].forEach(function (k) {
+          customData[k] = customData[k].filter(function (it) {
+            return it && it.id && it.name &&
+              typeof it.lat === 'number' && typeof it.lng === 'number' &&
+              isFinite(it.lat) && isFinite(it.lng);
+          });
+        });
+      })();
+      function saveCustomData() {
+        try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customData)); } catch (e) {}
+      }
+      function mergeCustomData() {
+        customData.boxes.forEach(function (b) { if (!findById(BOXES, b.id)) { b.custom = true; BOXES.push(b); } });
+        customData.facilities.forEach(function (f) { if (!findById(FACILITIES, f.id)) { f.custom = true; FACILITIES.push(f); } });
+        customData.pois.forEach(function (p) { if (!findById(POIS, p.id)) { p.custom = true; POIS.push(p); } });
+      }
+      mergeCustomData();
+      // 前面的徽章清洗发生在合并自定义盒子之前，会把自定义盒子的收集记录一起清掉，这里补回来
+      (function rehydrateCustomBadges() {
+        try {
+          var raw = JSON.parse(localStorage.getItem('kidsMapBadges') || '{}') || {};
+          BOXES.forEach(function (b) { if (raw[b.id]) { badgeFound[b.id] = true; } });
+        } catch (e) {}
+      })();
+      // 加了新盒子之后，页面里写死的「13 个」要跟着变，否则文案自相矛盾
+      (function syncCountCopy() {
+        var n = BOXES.length;
+        if (n === 13) { return; }
+        try {
+          var noteEl = document.querySelector('.note');
+          if (noteEl) { noteEl.innerHTML = noteEl.innerHTML.replace('13 个盒子建筑', n + ' 个盒子建筑'); }
+          if (POIS[0] && POIS[0].line) { POIS[0].line = POIS[0].line.split('13 个徽章').join(n + ' 个徽章'); }
+        } catch (e) {}
+      })();
+
+      /* ===== 微调位置工具：本地记忆用户手动定的坐标，支持在地图上点选精修 ===== */
+      (function applyLocOverrides() {
+        [].concat(BOXES, POIS, FACILITIES, LANDMARKS).forEach(function (p) {
+          var o = locOverrides[p.id];
+          if (o && typeof o.lat === 'number' && typeof o.lng === 'number') {
+            p.lat = o.lat; p.lng = o.lng;
+          }
+        });
+      })();
+      var LOC_POINTS = [];
+      // 编辑器会往数据源里加/删项，所以每次打开微调面板都重建一次清单
+      function rebuildLocPoints() {
+        LOC_POINTS = []
+          .concat(BOXES.map(function (b) { return { kind: '盒子', p: b }; }))
+          .concat(FACILITIES.map(function (f) { return { kind: '设施', p: f }; }))
+          .concat(POIS.map(function (q) { return { kind: '叙事点', p: q }; }));
+      }
+      rebuildLocPoints();
+      function findLocPoint(id) {
+        for (var i = 0; i < LOC_POINTS.length; i++) {
+          if (LOC_POINTS[i].p.id === id) { return LOC_POINTS[i].p; }
+        }
+        return null;
+      }
+      function fillLocSelect() {
+        var sel = document.getElementById('locSelect');
+        if (!sel) { return; }
+        sel.innerHTML = '';
+        LOC_POINTS.forEach(function (it) {
+          var p = it.p;
+          var opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = (p.letter ? p.letter + ' · ' : '') + p.name + '（' + it.kind + '）';
+          sel.appendChild(opt);
+        });
+      }
+      function updateLocList() {
+        var box = document.getElementById('locList');
+        if (box) {
+          var html = '';
+          LOC_POINTS.forEach(function (it) {
+            var p = it.p;
+            var mark = (locTarget && locTarget.id === p.id) ? ' ◀ 选中' : '';
+            html += '<div>' + (p.letter ? p.letter + ' ' : '') + p.name + ': ' +
+              (p.unlocated ? '待定位' : (p.lat.toFixed(6) + ',' + p.lng.toFixed(6))) + mark + '</div>';
+          });
+          box.innerHTML = html;
+        }
+        var curEl = document.getElementById('locCurrent');
+        if (curEl) {
+          if (locTarget) {
+            curEl.textContent = '当前选中：' + (locTarget.letter ? locTarget.letter + ' ' : '') +
+              locTarget.name + ' → ' + locTarget.lat.toFixed(6) + ',' + locTarget.lng.toFixed(6);
+          } else {
+            curEl.textContent = '还没选点';
+          }
+        }
+      }
+      function openLocPanel() {
+        rebuildLocPoints();
+        fillLocSelect();
+        var sel = document.getElementById('locSelect');
+        if (sel && sel.options.length) { sel.selectedIndex = 0; locTarget = findLocPoint(sel.value); }
+        var panel = document.getElementById('locPanel');
+        if (panel) { panel.style.display = 'block'; }
+        locMode = true;
+        var btn = document.getElementById('locBtn');
+        if (btn) { btn.textContent = '微调中…'; btn.style.background = '#7F77DD'; btn.style.color = '#fff'; }
+        updateLocList();
+      }
+      function closeLocPanel() {
+        var panel = document.getElementById('locPanel');
+        if (panel) { panel.style.display = 'none'; }
+        locMode = false;
+        var btn = document.getElementById('locBtn');
+        if (btn) { btn.textContent = '微调'; btn.style.background = ''; btn.style.color = ''; }
+      }
+      function copyLocAll() {
+        var arr = LOC_POINTS.map(function (it) {
+          var p = it.p;
+          return { id: p.id, name: p.name, letter: p.letter || '', lat: p.lat, lng: p.lng };
+        });
+        var human = arr.map(function (o) {
+          return (o.letter ? o.letter + ' ' : '') + o.name + ': ' + o.lat.toFixed(6) + ',' + o.lng.toFixed(6);
+        }).join('\n');
+        var json = JSON.stringify(arr, null, 1);
+        var text = human + '\n\n--- JSON（发给小八直接写进文件）---\n' + json;
+        var curEl = document.getElementById('locCurrent');
+        function flash(msg) { if (curEl) { curEl.textContent = msg; } }
+        function doCopy() {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () { flash('已复制全部坐标到剪贴板 ✅'); },
+              function () { fallbackCopy(text); flash('已复制全部坐标到剪贴板 ✅'); }
+            );
+          } else { fallbackCopy(text); flash('已复制全部坐标到剪贴板 ✅'); }
+        }
+        doCopy();
+      }
+      function fallbackCopy(t) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = t; ta.style.position = 'fixed'; ta.style.top = '-1000px';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (e2) {}
+          document.body.removeChild(ta);
+        } catch (e) {}
+      }
+      var locBtnEl = document.getElementById('locBtn');
+      if (locBtnEl) { locBtnEl.addEventListener('click', openLocPanel); }
+      var locSelectEl = document.getElementById('locSelect');
+      if (locSelectEl) { locSelectEl.addEventListener('change', function () {
+        var val = this.value;
+        locTarget = findLocPoint(val);
+        // 微调选中的若是设施，自动显示该设施类型，避免「点了地图但标记不出现」
+        var entry = null;
+        for (var i = 0; i < LOC_POINTS.length; i++) { if (LOC_POINTS[i].p.id === val) { entry = LOC_POINTS[i]; break; } }
+        if (entry && entry.kind === '设施' && entry.p.type) {
+          facShown[entry.p.type] = true;
+          var chip = document.querySelector('.facility-chip[data-type="' + entry.p.type + '"]');
+          if (chip) { chip.classList.add('on'); }
+          rebuildMarkers();
+        }
+        updateLocList();
+      }); }
+      var locCopyEl = document.getElementById('locCopy');
+      if (locCopyEl) { locCopyEl.addEventListener('click', copyLocAll); }
+      var locExitEl = document.getElementById('locExit');
+      if (locExitEl) { locExitEl.addEventListener('click', closeLocPanel); }
+      // 一键清空本设备上的微调记忆，回到文件里的官方坐标（解决旧记忆盖掉新坐标）
+      var locResetEl = document.getElementById('locReset');
+      if (locResetEl) { locResetEl.addEventListener('click', function () {
+        try { localStorage.removeItem(LOC_KEY); } catch (e) {}
+        locOverrides = {};
+        location.reload();
+      }); }
+
+      /* ===== 地点编辑器：不写死，随时新增盒子 / 设施 / 叙事点 =====
+         数据落 localStorage(kidsMapCustom)，和内置数组合并后一起渲染；
+         「复制 JSON」可以把新增项发给小八，正式写进 index.html / data-pois.json。 */
+      var SHAPE_LABELS = [
+        ['house', '房子'], ['wrench', '扳手'], ['scale', '天平'], ['heart', '爱心'],
+        ['flower', '花朵'], ['truck', '小车'], ['book', '书本'], ['puzzle', '拼图'],
+        ['leaf', '叶子'], ['shield', '盾牌'], ['star', '星星'], ['bolt', '闪电'], ['play', '剧场']
+      ];
+      var EDIT_COLORS = ['#7F77DD', '#8B5CD6', '#ED93B1', '#F2795B', '#EF9F27', '#F2A65A',
+                         '#97C459', '#639922', '#5DCAA5', '#1D9E75', '#378ADD', '#4AA8D8', '#D85A30'];
+      var editKind = 'box';
+      var editingKind = null;
+      var editingId = null;
+      var editShape = 'puzzle';
+      var editColor = '#7F77DD';
+      var editPickMode = false;
+      var editDraft = { lat: null, lng: null };
+
+      function editEl(id) { return document.getElementById(id); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function copyText(text, okMsg) {
+        function done() { showToast(okMsg); }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+        } else { fallbackCopy(text); done(); }
+      }
+      function bucketFor(kind) {
+        return kind === 'box' ? customData.boxes : (kind === 'facility' ? customData.facilities : customData.pois);
+      }
+      function liveFor(kind) {
+        return kind === 'box' ? BOXES : (kind === 'facility' ? FACILITIES : POIS);
+      }
+
+      // 图形下拉 / 色板要等 BOX_SYMBOLS 初始化后才能建，所以放到第一次打开面板时惰性生成
+      function buildEditForm() {
+        var sel = editEl('editShape');
+        if (sel && !sel.options.length) {
+          SHAPE_LABELS.forEach(function (pair) {
+            if (!BOX_SYMBOLS[pair[0]]) { return; }
+            var opt = document.createElement('option');
+            opt.value = pair[0];
+            opt.textContent = pair[1];
+            sel.appendChild(opt);
+          });
+        }
+        var sw = editEl('editSwatches');
+        if (sw && !sw.children.length) {
+          EDIT_COLORS.forEach(function (c) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'edit-swatch';
+            b.style.background = c;
+            b.setAttribute('data-color', c);
+            b.setAttribute('title', c);
+            b.addEventListener('click', function () { setEditColor(c); });
+            sw.appendChild(b);
+          });
+        }
+      }
+      function setEditColor(c) {
+        editColor = c;
+        Array.prototype.forEach.call(document.querySelectorAll('.edit-swatch'), function (b) {
+          b.classList.toggle('on', b.getAttribute('data-color') === c);
+        });
+      }
+      function setEditKind(k) {
+        editKind = k;
+        Array.prototype.forEach.call(document.querySelectorAll('#editKind button'), function (b) {
+          b.classList.toggle('on', b.getAttribute('data-kind') === k);
+        });
+        function toggle(sel, show) {
+          Array.prototype.forEach.call(document.querySelectorAll(sel), function (r) {
+            r.style.display = show ? 'block' : 'none';
+          });
+        }
+        toggle('#editFormPane .edit-only-box', k === 'box');
+        toggle('#editFormPane .edit-only-fac', k === 'facility');
+        toggle('#editFormPane .edit-color', k !== 'facility');
+      }
+      function updateEditCoord() {
+        var el = editEl('editCoord');
+        if (!el) { return; }
+        el.textContent = editDraft.lat == null
+          ? '还没选位置 —— 点下面的按钮，再在地图上点一下'
+          : editDraft.lat.toFixed(6) + ',' + editDraft.lng.toFixed(6);
+      }
+      function updatePickBtn() {
+        var b = editEl('editPick');
+        if (!b) { return; }
+        b.textContent = editPickMode ? '请在地图上点一下（再点此取消）' : '在地图上点选位置';
+        b.style.borderColor = editPickMode ? '#7F77DD' : '#AFA9EC';
+        b.style.background = editPickMode ? '#EDE9FE' : '#FFFFFF';
+      }
+      function switchEditTab(name) {
+        var add = editEl('editTabAdd'), list = editEl('editTabList');
+        var fp = editEl('editFormPane'), lp = editEl('editListPane');
+        if (add) { add.classList.toggle('on', name === 'add'); }
+        if (list) { list.classList.toggle('on', name === 'list'); }
+        if (fp) { fp.style.display = name === 'add' ? 'block' : 'none'; }
+        if (lp) { lp.style.display = name === 'list' ? 'block' : 'none'; }
+        if (name === 'list') { renderEditList(); }
+      }
+      function resetEditForm() {
+        editingId = null;
+        editingKind = null;
+        editPickMode = false;
+        editDraft = { lat: null, lng: null };
+        if (editEl('editName')) { editEl('editName').value = ''; }
+        if (editEl('editLetter')) { editEl('editLetter').value = ''; }
+        if (editEl('editOneLiner')) { editEl('editOneLiner').value = ''; }
+        if (editEl('editLine')) { editEl('editLine').value = ''; }
+        if (editEl('editShape')) { editEl('editShape').value = 'puzzle'; }
+        if (editEl('editFacType')) { editEl('editFacType').value = 'mall'; }
+        editShape = 'puzzle';
+        setEditColor('#7F77DD');
+        setEditKind('box');
+        updateEditCoord();
+        updatePickBtn();
+        if (editEl('editSave')) { editEl('editSave').textContent = '保存地点'; }
+      }
+      function saveEditItem() {
+        var nameEl = editEl('editName');
+        var name = (nameEl ? nameEl.value : '').replace(/^\s+|\s+$/g, '');
+        if (!name) { alert('先给这个地点起个名字'); return; }
+        if (editDraft.lat == null || editDraft.lng == null) {
+          alert('还没选位置：点「在地图上点选位置」，再在地图上点一下');
+          return;
+        }
+        var kind = editKind;
+        var oneLiner = ((editEl('editOneLiner') || {}).value || '').replace(/^\s+|\s+$/g, '');
+        var line = ((editEl('editLine') || {}).value || '').replace(/^\s+|\s+$/g, '');
+
+        // 编辑中途换了类型：先把旧类型里的那条删掉，避免留下孤儿数据
+        if (editingId && editingKind && editingKind !== kind) {
+          deleteEditItem(editingKind, editingId, true);
+        }
+        var bucket = bucketFor(kind);
+        var target = (editingId && editingKind === kind) ? findById(bucket, editingId) : null;
+        var isNew = !target;
+        if (isNew) {
+          target = { id: 'cx-' + kind + '-' + Date.now().toString(36) + Math.floor(Math.random() * 900 + 100) };
+          bucket.push(target);
+        }
+        target.name = name;
+        target.lat = editDraft.lat;
+        target.lng = editDraft.lng;
+        target.custom = true;
+        target.oneLiner = oneLiner;
+        target.line = line;
+        if (kind === 'box') {
+          target.letter = ((editEl('editLetter') || {}).value || '').replace(/^\s+|\s+$/g, '').slice(0, 2);
+          target.shape = editShape;
+          target.color = editColor;
+        } else if (kind === 'facility') {
+          target.type = (editEl('editFacType') || {}).value || 'mall';
+          facShown[target.type] = true;
+          var chip = document.querySelector('.facility-chip[data-type="' + target.type + '"]');
+          if (chip) { chip.classList.add('on'); }
+        } else {
+          target.color = editColor;
+          // 叙事点不猜素材：留空就走 Q 版机器人 + 默认吉祥物
+          target.icon = '';
+          target.mascot = '';
+          target.timeSlot = '';
+          target.slotLabel = '';
+        }
+        var live = liveFor(kind);
+        if (!findById(live, target.id)) { live.push(target); }
+        saveCustomData();
+        rebuildLocPoints();
+        rebuildMarkers();
+        updateBadgeCounter();
+        var nlat = target.lat, nlng = target.lng;
+        showToast((isNew ? '已添加「' : '已保存「') + name + '」' +
+          (kind === 'box' ? '，徽章总数变成 ' + BOXES.length + ' 枚' : ''));
+        resetEditForm();
+        switchEditTab('list');
+        try { map.setCenter(new TMap.LatLng(nlat, nlng)); } catch (e) {}
+      }
+      function renderEditList() {
+        var box = editEl('editList');
+        if (!box) { return; }
+        var html = '';
+        function rows(kind, arr, tag) {
+          arr.forEach(function (it) {
+            html += '<div class="edit-row">' +
+              '<span class="ei-name">' + (it.letter ? escapeHtml(it.letter) + ' · ' : '') + escapeHtml(it.name) + '</span>' +
+              '<span class="ei-tag">' + tag + '</span>' +
+              '<button type="button" class="ei-edit" data-act="edit" data-kind="' + kind + '" data-id="' + escapeHtml(it.id) + '">改</button>' +
+              '<button type="button" class="ei-del" data-act="del" data-kind="' + kind + '" data-id="' + escapeHtml(it.id) + '">删</button>' +
+              '</div>';
+          });
+        }
+        rows('box', customData.boxes, '盒子');
+        rows('facility', customData.facilities, '设施');
+        rows('poi', customData.pois, '叙事');
+        if (!html) {
+          html = '<p class="edit-hint" style="margin:6px 0">还没有自己加的地点。切到「新增地点」加一个试试。</p>';
+        }
+        html += '<p class="edit-hint" style="margin-top:10px">文件里的内置地点：' +
+          (BOXES.length - customData.boxes.length) + ' 个盒子 · ' +
+          (FACILITIES.length - customData.facilities.length) + ' 个设施 · ' +
+          (POIS.length - customData.pois.length) + ' 个叙事点（不可删，位置不准请用「微调」挪）。' +
+          '新加的盒子不会自动进「亲子路线」的站点，需要的话让小八补一句。</p>';
+        box.innerHTML = html;
+      }
+      function startEditItem(kind, id) {
+        var it = findById(bucketFor(kind), id);
+        if (!it) { return; }
+        switchEditTab('add');
+        editingId = it.id;
+        editingKind = kind;
+        setEditKind(kind);
+        if (editEl('editName')) { editEl('editName').value = it.name || ''; }
+        if (editEl('editOneLiner')) { editEl('editOneLiner').value = it.oneLiner || ''; }
+        if (editEl('editLine')) { editEl('editLine').value = it.line || ''; }
+        editDraft = { lat: it.lat, lng: it.lng };
+        if (kind === 'box') {
+          if (editEl('editLetter')) { editEl('editLetter').value = it.letter || ''; }
+          editShape = it.shape || 'puzzle';
+          if (editEl('editShape')) { editEl('editShape').value = editShape; }
+          setEditColor(it.color || '#7F77DD');
+        } else if (kind === 'facility') {
+          if (editEl('editFacType')) { editEl('editFacType').value = it.type || 'mall'; }
+        } else {
+          setEditColor(it.color || '#7F77DD');
+        }
+        editPickMode = false;
+        updateEditCoord();
+        updatePickBtn();
+        if (editEl('editSave')) { editEl('editSave').textContent = '保存修改'; }
+        try { map.setCenter(new TMap.LatLng(it.lat, it.lng)); map.setZoom(Math.max(map.getZoom(), 18)); } catch (e) {}
+      }
+      function deleteEditItem(kind, id, silent) {
+        var bucket = bucketFor(kind);
+        var live = liveFor(kind);
+        removeById(bucket, id);
+        removeById(live, id);
+        saveCustomData();
+        rebuildLocPoints();
+        rebuildMarkers();
+        updateBadgeCounter();
+        if (!silent) {
+          renderEditList();
+          showToast('已删除这个地点');
+        }
+      }
+      function exportCustomData() {
+        var total = customData.boxes.length + customData.facilities.length + customData.pois.length;
+        if (!total) { alert('还没有自己加的地点，先加一个再来复制'); return; }
+        var human = [];
+        customData.boxes.forEach(function (b) {
+          human.push('盒子 ' + (b.letter ? b.letter + ' ' : '') + b.name + '：' + b.lat.toFixed(6) + ',' + b.lng.toFixed(6));
+        });
+        customData.facilities.forEach(function (f) {
+          human.push('设施 ' + f.name + '（' + (f.type || '') + '）：' + f.lat.toFixed(6) + ',' + f.lng.toFixed(6));
+        });
+        customData.pois.forEach(function (p) {
+          human.push('叙事点 ' + p.name + '：' + p.lat.toFixed(6) + ',' + p.lng.toFixed(6));
+        });
+        var text = '我在地点编辑器里加的地点（共 ' + total + ' 个）\n\n' + human.join('\n') +
+          '\n\n--- JSON（发给小八写进 index.html / data-pois.json）---\n' +
+          JSON.stringify({ boxes: customData.boxes, facilities: customData.facilities, pois: customData.pois }, null, 2);
+        copyText(text, '已复制 ' + total + ' 个自定义地点，粘贴给小八即可 ✅');
+      }
+      function wipeCustomData() {
+        var total = customData.boxes.length + customData.facilities.length + customData.pois.length;
+        if (!total) { alert('现在没有自定义地点'); return; }
+        if (!confirm('确定清空你自己加的 ' + total + ' 个地点？内置地点不受影响。')) { return; }
+        customData.boxes.forEach(function (it) { removeById(BOXES, it.id); });
+        customData.facilities.forEach(function (it) { removeById(FACILITIES, it.id); });
+        customData.pois.forEach(function (it) { removeById(POIS, it.id); });
+        customData = { boxes: [], facilities: [], pois: [] };
+        saveCustomData();
+        rebuildLocPoints();
+        rebuildMarkers();
+        updateBadgeCounter();
+        resetEditForm();
+        renderEditList();
+        showToast('已清空自定义地点');
+      }
+      function openEditPanel() {
+        buildEditForm();
+        resetEditForm();
+        switchEditTab('add');
+        renderEditList();
+        closeLocPanel();
+        var rp = document.getElementById('routePanel');
+        if (rp) { rp.style.display = 'none'; }
+        var p = editEl('editPanel');
+        if (p) { p.style.display = 'block'; }
+        var b = editEl('editBtn');
+        if (b) { b.textContent = '编辑中'; b.style.background = '#7F77DD'; b.style.color = '#fff'; }
+        if (!bannerTouched) { setBannerCollapsed(true); }
+      }
+      function closeEditPanel() {
+        editPickMode = false;
+        updatePickBtn();
+        var p = editEl('editPanel');
+        if (p) { p.style.display = 'none'; }
+        var b = editEl('editBtn');
+        if (b) { b.textContent = '编辑'; b.style.background = ''; b.style.color = ''; }
+        if (!bannerTouched) { setBannerCollapsed(!!kidMode); }
+      }
+      (function bindEditor() {
+        var btn = editEl('editBtn');
+        if (!btn) { return; }
+        btn.addEventListener('click', function () {
+          var p = editEl('editPanel');
+          if (p && p.style.display === 'block') { closeEditPanel(); } else { openEditPanel(); }
+        });
+        editEl('editClose').addEventListener('click', closeEditPanel);
+        editEl('editTabAdd').addEventListener('click', function () { switchEditTab('add'); });
+        editEl('editTabList').addEventListener('click', function () { switchEditTab('list'); });
+        Array.prototype.forEach.call(document.querySelectorAll('#editKind button'), function (b) {
+          b.addEventListener('click', function () { setEditKind(b.getAttribute('data-kind')); });
+        });
+        editEl('editPick').addEventListener('click', function () {
+          editPickMode = !editPickMode;
+          updatePickBtn();
+          if (editPickMode) { showToast('点一下地图，把地点放上去'); }
+        });
+        editEl('editSave').addEventListener('click', saveEditItem);
+        editEl('editCancel').addEventListener('click', resetEditForm);
+        editEl('editExport').addEventListener('click', exportCustomData);
+        editEl('editWipe').addEventListener('click', wipeCustomData);
+        editEl('editList').addEventListener('click', function (e) {
+          var t = e.target;
+          if (!t || !t.getAttribute) { return; }
+          var act = t.getAttribute('data-act');
+          if (!act) { return; }
+          var kind = t.getAttribute('data-kind');
+          var id = t.getAttribute('data-id');
+          if (act === 'del') { deleteEditItem(kind, id); }
+          else { startEditItem(kind, id); }
+        });
+      })();
+
+      function markerStyles(size, anchorY, useIcons) {
+        var styles = {};
+        POIS.forEach(function (p) {
+          var src = (useIcons && p.icon) ? p.icon : robotIcon(p.color);
+          styles[p.id] = new TMap.MarkerStyle({
+            width: size,
+            height: size,
+            src: src,
+            anchor: { x: size / 2, y: anchorY }
+          });
+        });
+        return styles;
+      }
+
+      function geometries() {
+        return POIS.map(function (p) {
+          return { id: p.id, styleId: p.id, position: new TMap.LatLng(p.lat, p.lng) };
+        });
+      }
+
+      function setLayerVisible(layer, visible) {
+        if (layer.setVisible) { layer.setVisible(visible); }
+        else { layer.setMap(visible ? map : null); }
+      }
+
+      /* 单一 MultiMarker 图层策略：腾讯 GL JS 在同一张地图上挂多个 MultiMarker 时，
+         后建的图层会出现「状态全对但一个也不渲染」的情况（疑似 GL 资源竞争）——
+         实测盒子、设施、路线站点三个图层共存时会被互相挤掉。
+         这里把 POI / 盒子 / 地标 / 设施 / 路线站点全部塞进同一个图层，
+         任何一处变化都走 rebuildMarkers() 整体重建。
+         另外 MultiMarker 初始化后 setStyles/setGeometries 不重绘，也只能重建。 */
+      var layerMarkers = null;
+      var routeStops = null; // 当前路线的站点数据，rebuild 时重画，避免切模式后站点丢失
+      function rebuildMarkers() {
+        var styles = {}, geos = [];
+        // 1) POI（机器人小镇叙事点）：标准模式用 Q 版机器人，儿童模式用定制图标
+        var ps = kidMode ? 48 : 40;
+        POIS.forEach(function (p) {
+          var src = (kidMode && p.icon) ? p.icon : robotIcon(p.color);
+          styles['poi-' + p.id] = new TMap.MarkerStyle({ width: ps, height: ps, src: src, anchor: { x: ps / 2, y: ps } });
+          geos.push({ id: 'poi-' + p.id, styleId: 'poi-' + p.id, position: new TMap.LatLng(p.lat, p.lng) });
+        });
+        // 2) 盒子建筑徽章（标准/儿童模式都常显，大卫老师要求不要"点开才看得见"）
+        var bs = kidMode ? 40 : 36;
+        BOXES.forEach(function (b) {
+          var done = !!badgeFound[b.id];
+          var stop = routeStopFor(b);
+          var size = done ? bs + 4 : bs;
+          if (stop) { size = bs + 6; } // 套环时稍微放大，环才不会被相邻图标吃掉
+          styles['box-' + b.id] = new TMap.MarkerStyle({ width: size, height: size, src: boxIcon(b, done, stop), anchor: { x: size / 2, y: size / 2 } });
+          geos.push({ id: 'box-' + b.id, styleId: 'box-' + b.id, position: new TMap.LatLng(b.lat, b.lng) });
+        });
+        // 3) 普通地标
+        LANDMARKS.forEach(function (m) {
+          var ls = 34;
+          styles['lm-' + m.id] = new TMap.MarkerStyle({ width: ls, height: ls, src: landmarkIcon(m), anchor: { x: ls / 2, y: ls / 2 } });
+          geos.push({ id: 'lm-' + m.id, styleId: 'lm-' + m.id, position: new TMap.LatLng(m.lat, m.lng) });
+        });
+        // 4) 设施（由 chips 控制；无法定位的设施画成灰色「?」占位，不假装精确位置）
+        FACILITIES.forEach(function (f) {
+          if (!facShown[f.type]) { return; }
+          var st = FAC_STYLE[f.type];
+          var fsrc = f.unlocated ? routeSVG('?', '#B0AAC6', 26) : routeSVG(st.label, st.color, 26);
+          styles['fac-' + f.id] = new TMap.MarkerStyle({ width: 26, height: 26, src: fsrc, anchor: { x: 13, y: 13 } });
+          geos.push({ id: 'fac-' + f.id, styleId: 'fac-' + f.id, position: new TMap.LatLng(f.lat, f.lng) });
+        });
+        // 5) 当前路线里「不是盒子」的站点（如地铁站、商场），单独画一个环形标记
+        if (routeStops) {
+          routeStops.forEach(function (s2) {
+            var onBox = BOXES.some(function (b) {
+              return Math.abs(s2.lat - b.lat) < 0.00003 && Math.abs(s2.lng - b.lng) < 0.00003;
+            });
+            if (onBox) { return; }
+            styles['stop-' + s2.id] = new TMap.MarkerStyle({ width: 46, height: 46, src: ringSVG(s2.text, s2.bg, 46), anchor: { x: 23, y: 23 } });
+            geos.push({ id: 'stop-' + s2.id, styleId: 'stop-' + s2.id, position: new TMap.LatLng(s2.lat, s2.lng) });
+          });
+        }
+        if (layerMarkers) { try { layerMarkers.setMap(null); } catch (e) {} }
+        layerMarkers = new TMap.MultiMarker({ map: map, styles: styles, geometries: geos });
+      }
+
+      var labelKid = new TMap.MultiLabel({
+        map: map,
+        styles: {
+          label: new TMap.LabelStyle({
+            color: '#3C3489',
+            size: 13,
+            backgroundColor: '#FFFFFF',
+            borderColor: '#AFA9EC',
+            borderWidth: 1,
+            borderRadius: 8,
+            padding: '4px 8px',
+            offset: { x: 0, y: -66 }
+          })
+        },
+        geometries: POIS.map(function (p) {
+          return { id: 'lbl-' + p.id, styleId: 'label', position: new TMap.LatLng(p.lat, p.lng), content: p.name };
+        })
+      });
+      setLayerVisible(labelKid, false);
+
+      var zone = new TMap.MultiPolygon({
+        map: map,
+        styles: {
+          core: new TMap.PolygonStyle({
+            color: 'rgba(127,119,221,0.12)',
+            borderColor: '#7F77DD',
+            borderWidth: 2
+          })
+        },
+        geometries: [{
+          id: 'robot-ave',
+          styleId: 'core',
+          paths: [
+            new TMap.LatLng(22.604200, 114.059900),
+            new TMap.LatLng(22.604200, 114.062100),
+            new TMap.LatLng(22.602600, 114.062100),
+            new TMap.LatLng(22.602600, 114.059900)
+          ]
+        }]
+      });
+
+      /* ===== 盒子建筑徽章系统 ===== */
+      var BOX_SYMBOLS = {
+        house:  '<path d="M48 26 L72 46 h-8 v22 h-32 v-22 h-8 z" fill="#FFFFFF"/>',
+        wrench: '<circle cx="38" cy="38" r="13" fill="#FFFFFF"/><rect x="44" y="44" width="24" height="10" rx="5" fill="#FFFFFF" transform="rotate(45 44 44)"/>',
+        scale:  '<line x1="48" y1="28" x2="48" y2="64" stroke="#FFFFFF" stroke-width="4"/><line x1="30" y1="34" x2="66" y2="34" stroke="#FFFFFF" stroke-width="4"/><circle cx="30" cy="46" r="7" fill="none" stroke="#FFFFFF" stroke-width="3.5"/><circle cx="66" cy="46" r="7" fill="none" stroke="#FFFFFF" stroke-width="3.5"/><line x1="38" y1="64" x2="58" y2="64" stroke="#FFFFFF" stroke-width="4"/>',
+        heart:  '<path d="M48 72 c-16 -12 -24 -20 -24 -30 a12 12 0 0 1 24 -6 a12 12 0 0 1 24 6 c0 10 -8 18 -24 30 z" fill="#FFFFFF"/>',
+        flower: '<circle cx="48" cy="34" r="8" fill="#FFFFFF"/><circle cx="62" cy="44" r="8" fill="#FFFFFF"/><circle cx="56" cy="60" r="8" fill="#FFFFFF"/><circle cx="40" cy="60" r="8" fill="#FFFFFF"/><circle cx="34" cy="44" r="8" fill="#FFFFFF"/><circle cx="48" cy="48" r="7" fill="COLOR"/>',
+        truck:  '<rect x="22" y="36" width="30" height="22" rx="3" fill="#FFFFFF"/><path d="M52 42 h12 l9 9 v7 h-21 z" fill="#FFFFFF"/><circle cx="33" cy="63" r="6" fill="#FFFFFF"/><circle cx="63" cy="63" r="6" fill="#FFFFFF"/>',
+        book:   '<path d="M48 36 c-8 -6 -18 -6 -24 -2 v30 c6 -4 16 -4 24 2 z" fill="#FFFFFF"/><path d="M48 36 c8 -6 18 -6 24 -2 v30 c-6 -4 -16 -4 -24 2 z" fill="#FFFFFF"/>',
+        puzzle: '<rect x="30" y="30" width="36" height="36" rx="6" fill="#FFFFFF"/><circle cx="48" cy="24" r="7" fill="#FFFFFF"/><circle cx="48" cy="72" r="7" fill="#FFFFFF"/>',
+        leaf:   '<path d="M48 28 C66 34 68 56 48 72 C28 56 30 34 48 28 Z" fill="#FFFFFF"/><line x1="48" y1="33" x2="48" y2="67" stroke="COLOR" stroke-width="3"/>',
+        shield: '<path d="M48 26 L70 34 v14 c0 16 -22 26 -22 26 s-22 -10 -22 -26 v-14 z" fill="#FFFFFF"/>',
+        star:   '<path d="M48 24 l7 16 l18 2 l-13 12 l4 18 l-16 -9 l-16 9 l4 -18 l-13 -12 l18 -2 z" fill="#FFFFFF"/>',
+        bolt:   '<path d="M52 24 L36 50 h12 l-4 22 l18 -28 h-12 l6 -20 z" fill="#FFFFFF"/>',
+        play:   '<circle cx="48" cy="48" r="22" fill="none" stroke="#FFFFFF" stroke-width="5"/><path d="M41 36 l22 12 l-22 12 z" fill="#FFFFFF"/>'
+      };
+      // stop = 当前路线里这一站的数据（有值时：外圈套彩色环 + 右上角显示站号）
+      function boxIcon(box, collected, stop) {
+        var symbol = (BOX_SYMBOLS[box.shape] || BOX_SYMBOLS.puzzle).split('COLOR').join(box.color);
+        // 左上角字母徽标：让孩子在地图上直接看出 A-H 的排队顺序
+        var letter2 = box.letter && box.letter.length >= 2;
+        var letter = box.letter
+          ? '<circle cx="20" cy="21" r="' + (letter2 ? 18 : 16) + '" fill="#FFFFFF" stroke="' + box.color + '" stroke-width="3"/>' +
+            '<text x="20" y="' + (letter2 ? 26 : 29) + '" font-size="' + (letter2 ? 15 : 22) + '" text-anchor="middle" fill="' + box.color + '" font-family="ZCOOL KuaiLe, PingFang SC, sans-serif" font-weight="bold">' + box.letter + '</text>'
+          : '';
+        // 右上角角标：路线激活时显示站号，否则显示收集状态（✓ / ？）
+        var badge = stop
+          ? '<circle cx="77" cy="19" r="15" fill="' + stop.bg + '" stroke="#FFFFFF" stroke-width="3"/>' +
+            '<text x="77" y="26" font-size="19" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="bold">' + stop.text + '</text>'
+          : (collected
+            ? '<circle cx="77" cy="19" r="13" fill="#EF9F27" stroke="#FFFFFF" stroke-width="3"/>' +
+              '<path d="M70 19 l5 5 l9 -10" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+            : '<circle cx="77" cy="19" r="13" fill="#B9B6C9" stroke="#FFFFFF" stroke-width="3"/>' +
+              '<text x="77" y="25" font-size="17" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="bold">?</text>');
+        // 路线激活时套一圈白色的底环 + 彩色细环，像"盖章"一样突出这一站
+        var ring = stop
+          ? '<circle cx="48" cy="48" r="43" fill="none" stroke="#FFFFFF" stroke-width="7"/>' +
+            '<circle cx="48" cy="48" r="43" fill="none" stroke="' + stop.bg + '" stroke-width="3.5"/>'
+          : '';
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">' +
+          ring +
+          '<rect x="12" y="14" width="72" height="68" rx="14" fill="' + box.color + '" stroke="#FFFFFF" stroke-width="4"/>' +
+          symbol + badge + letter + '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      // 站点坐标与盒子坐标重合时，直接把站号画进盒子图标，不再额外叠一层标记
+      function routeStopFor(b) {
+        if (!routeStops) { return null; }
+        for (var i = 0; i < routeStops.length; i++) {
+          var s2 = routeStops[i];
+          if (Math.abs(s2.lat - b.lat) < 0.00003 && Math.abs(s2.lng - b.lng) < 0.00003) { return s2; }
+        }
+        return null;
+      }
+
+      function refreshBoxLayers() { rebuildMarkers(); }
+
+      /* ===== 普通地标（不收徽章，两种模式都显示） ===== */
+      function landmarkIcon(m) {
+        var symbol = (BOX_SYMBOLS[m.shape] || BOX_SYMBOLS.puzzle).split('COLOR').join(m.color);
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">' +
+          '<rect x="12" y="14" width="72" height="68" rx="14" fill="' + m.color + '" stroke="#FFFFFF" stroke-width="4"/>' +
+          symbol + '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      function refreshLandmarks() { rebuildMarkers(); }
+
+      function badgeCount() { return Object.keys(badgeFound).length; }
+      function updateBadgeCounter() {
+        var el = document.getElementById('eggCounter');
+        if (el) { el.textContent = '徽章 ' + badgeCount() + '/' + BOXES.length + ' · 还藏 ' + (BOXES.length - badgeCount()) + ' 枚'; }
+        var btn = document.getElementById('badgeBtn');
+        if (btn) { btn.textContent = '徽章 ' + badgeCount() + '/' + BOXES.length; }
+      }
+      updateBadgeCounter();
+
+      var toastTimer = null;
+      function showToast(msg) {
+        var el = document.getElementById('eggToast');
+        if (!el) { return; }
+        el.textContent = msg;
+        el.style.display = 'block';
+        if (toastTimer) { clearTimeout(toastTimer); }
+        toastTimer = setTimeout(function () { el.style.display = 'none'; }, 2600);
+      }
+      function collectBox(box) {
+        if (badgeFound[box.id]) { return; }
+        badgeFound[box.id] = true;
+        try { localStorage.setItem('kidsMapBadges', JSON.stringify(badgeFound)); } catch (e) {}
+        refreshBoxLayers();
+        updateBadgeCounter();
+        var n = badgeCount();
+        if (n >= BOXES.length) {
+          var allP = document.getElementById('badgeAllText');
+          if (allP) {
+            allP.innerHTML = '你集齐了机器大道两旁<br>全部 ' + BOXES.length + ' 个盒子建筑的徽章！<br>机器人小镇记住了你的名字，<br>随时欢迎回来玩。';
+          }
+          document.getElementById('badgeWrap').style.display = 'flex';
+        } else {
+          showToast('获得「' + box.name + '」守护机器人的徽章！' + n + '/' + BOXES.length + '，还藏 ' + (BOXES.length - n) + ' 枚');
+        }
+      }
+
+      /* ===== 徽章图鉴 ===== */
+      function openAlbum() {
+        var grid = document.getElementById('albumGrid');
+        grid.innerHTML = '';
+        BOXES.forEach(function (b) {
+          var got = !!badgeFound[b.id];
+          var cell = document.createElement('div');
+          cell.className = 'album-cell ' + (got ? 'got' : 'locked');
+          var img = document.createElement('img');
+          img.src = boxIcon(b, got);
+          img.alt = b.name;
+          var name = document.createElement('span');
+          name.className = 'cell-name';
+          name.textContent = (b.letter ? b.letter + ' · ' : '') + b.name;
+          var state = document.createElement('span');
+          state.className = 'cell-state';
+          state.textContent = got ? '已获得' : '未找到';
+          cell.appendChild(img);
+          cell.appendChild(name);
+          cell.appendChild(state);
+          grid.appendChild(cell);
+        });
+        document.getElementById('albumTitle').textContent = '徽章图鉴 ' + badgeCount() + '/' + BOXES.length;
+        document.getElementById('badgeAlbumWrap').style.display = 'flex';
+      }
+      document.getElementById('badgeBtn').addEventListener('click', openAlbum);
+      document.getElementById('albumClose').addEventListener('click', function () {
+        document.getElementById('badgeAlbumWrap').style.display = 'none';
+      });
+      document.getElementById('badgeAlbumWrap').addEventListener('click', function (e) {
+        if (e.target === this) { this.style.display = 'none'; }
+      });
+
+      /* ===== 横幅折叠（地图放大时不占空间） ===== */
+      var bannerTouched = false;
+      document.getElementById('bannerToggle').addEventListener('click', function () {
+        bannerTouched = true;
+        var banner = document.getElementById('bannerCard');
+        var collapsed = banner.classList.toggle('collapsed');
+        this.textContent = collapsed ? '展开' : '收起';
+      });
+      function setBannerCollapsed(collapsed) {
+        var el = document.getElementById('bannerCard');
+        if (!el) { return; }
+        el.classList.toggle('collapsed', !!collapsed);
+        var t = document.getElementById('bannerToggle');
+        if (t) { t.textContent = collapsed ? '展开' : '收起'; }
+      }
+
+      /* ===== 路线系统（腾讯步行路线 API + 沿街示意降级） ===== */
+      var layerRoute = new TMap.MultiPolyline({ map: map, styles: {}, geometries: [] });
+      var activeRoute = null;
+      // 设施默认全部显示（商场/洗手间/地铁口都对带孩子有用）；芯片仍可手动隐藏
+      var facShown = { mall: true, wc: true, metro: true };
+      var STREET_LNG = 114.061650; // 机器人大道（雅宝路）中线经度（降级示意线路用）
+      var walkSeq = 0;
+
+      function routeSVG(text, bg, size) {
+        var r = size / 2;
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+          '<circle cx="' + r + '" cy="' + r + '" r="' + (r - 2) + '" fill="' + bg + '" stroke="#FFFFFF" stroke-width="3"/>' +
+          '<text x="' + r + '" y="' + (r + 5) + '" font-size="' + Math.round(size * 0.5) + '" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="bold">' + text + '</text>' +
+          '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      /* 路线站点用「空心环 + 左上角序号小圆」，环内保持透明，
+         这样套在盒子图标外面时不会把徽章图案盖住（实心圆会完全遮住 40px 的盒子） */
+      function ringSVG(text, color, size) {
+        var r = size / 2;
+        var br = Math.max(9, r * 0.44);
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+          '<circle cx="' + r + '" cy="' + r + '" r="' + (r - 3) + '" fill="none" stroke="#FFFFFF" stroke-width="7"/>' +
+          '<circle cx="' + r + '" cy="' + r + '" r="' + (r - 3) + '" fill="none" stroke="' + color + '" stroke-width="3.5"/>' +
+          '<circle cx="' + (br - 1) + '" cy="' + (br - 1) + '" r="' + br + '" fill="' + color + '" stroke="#FFFFFF" stroke-width="3"/>' +
+          '<text x="' + (br - 1) + '" y="' + (br + 4) + '" font-size="' + Math.round(br * 1.25) + '" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="bold">' + text + '</text>' +
+          '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      /* 腾讯 polyline 官方解压：一维数组，首点为原始值，之后前向差分、系数 1e6 */
+      function decodeTencentPolyline(arr) {
+        var c = [];
+        for (var i = 0; i < arr.length; i++) { c.push(Number(arr[i])); }
+        for (var j = 2; j < c.length; j++) { c[j] = c[j - 2] + c[j] / 1000000; }
+        var pts = [];
+        for (var k = 0; k + 1 < c.length; k += 2) {
+          if (isFinite(c[k]) && isFinite(c[k + 1])) { pts.push(new TMap.LatLng(c[k], c[k + 1])); }
+        }
+        return pts;
+      }
+      function distMeters(a, b) {
+        var R = 6371000, rad = Math.PI / 180;
+        var dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+        var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
+      }
+      function pathLength(pts) {
+        var d = 0;
+        for (var i = 1; i < pts.length; i++) { d += distMeters(pts[i - 1], pts[i]); }
+        return d;
+      }
+      /* 本地降级：每个站点先绕到机器大道中线，沿大道依次串联（示意线路） */
+      function streetPath(stops) {
+        var pts = [new TMap.LatLng(stops[0].lat, stops[0].lng)];
+        stops.forEach(function (s) { pts.push(new TMap.LatLng(s.lat, STREET_LNG)); });
+        pts.push(new TMap.LatLng(stops[stops.length - 1].lat, stops[stops.length - 1].lng));
+        return pts;
+      }
+      /* JSONP 调腾讯步行路线规划；接口不可用（如域名未授权）时回调 null，由调用方降级 */
+      function fetchWalking(from, to, cb) {
+        var d = distMeters(from, to);
+        if (d < 12) {
+          cb({ points: [new TMap.LatLng(from.lat, from.lng), new TMap.LatLng(to.lat, to.lng)], distance: d, duration: Math.max(1, Math.round(d / 70)), real: true });
+          return;
+        }
+        var name = 'walkCb' + (++walkSeq);
+        var settled = false;
+        function cleanup() { try { delete window[name]; } catch (e) { window[name] = undefined; } }
+        var timer = setTimeout(function () {
+          if (!settled) { settled = true; cleanup(); cb(null, 'timeout'); }
+        }, 8000);
+        window[name] = function (res) {
+          if (settled) { return; }
+          settled = true;
+          clearTimeout(timer);
+          cleanup();
+          if (res && res.status === 0 && res.result && res.result.routes && res.result.routes[0] && res.result.routes[0].polyline) {
+            var r = res.result.routes[0];
+            var pts = decodeTencentPolyline(r.polyline);
+            if (pts.length >= 2) {
+              pts[0] = new TMap.LatLng(from.lat, from.lng);
+              pts[pts.length - 1] = new TMap.LatLng(to.lat, to.lng);
+              cb({ points: pts, distance: Number(r.distance) || pathLength(pts), duration: Number(r.duration) || 0, real: true });
+              return;
+            }
+          }
+          cb(null, (res && res.status != null) ? String(res.status) : 'timeout');
+        };
+        var s = document.createElement('script');
+        s.onerror = function () {
+          if (!settled) { settled = true; clearTimeout(timer); cleanup(); cb(null); }
+        };
+        s.src = 'https://apis.map.qq.com/ws/direction/v1/walking/?from=' + from.lat + ',' + from.lng +
+                '&to=' + to.lat + ',' + to.lng + '&output=jsonp&callback=' + name + '&key=' + encodeURIComponent(key);
+        document.head.appendChild(s);
+      }
+      function activateRoute(route) {
+        activeRoute = route;
+        var stopLatLngs = route.stops.map(function (s) { return new TMap.LatLng(s.lat, s.lng); });
+        var stopDefs = route.stops.map(function (s, i) {
+          var isFirst = i === 0, isLast = i === route.stops.length - 1;
+          return {
+            id: 's' + i, lat: s.lat, lng: s.lng,
+            bg: isFirst ? '#97C459' : (isLast ? '#E24B4A' : route.color),
+            text: isFirst ? '起' : (isLast ? '终' : String(i))
+          };
+        });
+        routeStops = stopDefs;
+        rebuildMarkers();
+        document.getElementById('routeActive').style.display = 'block';
+        document.getElementById('routeName').textContent = route.name;
+        document.getElementById('routeMeta').textContent = '步行路线计算中…';
+        document.getElementById('routeDesc').textContent = route.desc;
+        document.getElementById('routeDot').style.background = route.color;
+        try { map.fitBounds(paddedBounds(route.stops)); } catch (e) {}
+        if (!bannerTouched) { setBannerCollapsed(true); }
+
+        var stops = route.stops;
+        var segs = new Array(stops.length - 1);
+        var done = 0, failed = false, totalDist = 0, totalDur = 0;
+        var failReason = '';
+        // 腾讯 WebService 常见失败码 → 说人话（110 白名单 / 121 配额 / 302 key 错）
+        function walkFailHint() {
+          if (String(failReason).indexOf('121') === 0) { return 'Key 今日配额已用完，先走示意线路；点右下角「Key」换成你自己的 Key'; }
+          if (String(failReason).indexOf('110') === 0) { return 'Key 白名单没包含当前域名，先走示意线路；点右下角「Key」查看填法'; }
+          if (String(failReason).indexOf('3') === 0) { return 'Key 无效或未开通 WebService 权限，先走示意线路；点右下角「Key」重填'; }
+          return '步行路线接口暂不可用，先沿机器大道画示意线路';
+        }
+        function drawLine(points, dist, dur, real) {
+          layerRoute.setStyles({ line: new TMap.PolylineStyle({ color: route.color, width: 6, borderColor: '#FFFFFF', borderWidth: 2, lineCap: true }) });
+          layerRoute.setGeometries([{ id: 'route-line', styleId: 'line', paths: points }]);
+          document.getElementById('routeMeta').textContent = real
+            ? '全程约' + Math.round(dist) + '米 · 步行约' + Math.max(1, Math.round(dur)) + '分钟'
+            : '全程约' + Math.round(dist) + '米（示意线路）';
+          if (!real) { showToast(walkFailHint()); }
+        }
+        function finish() {
+          if (failed) {
+            var pts = streetPath(stops);
+            drawLine(pts, pathLength(pts), 0, false);
+            return;
+          }
+          var all = [];
+          segs.forEach(function (seg) {
+            seg.points.forEach(function (p, i) {
+              if (i === 0 && all.length) { return; }
+              all.push(p);
+            });
+          });
+          drawLine(all, totalDist, totalDur, true);
+        }
+        for (var i = 0; i < stops.length - 1; i++) {
+          (function (idx) {
+            fetchWalking(stops[idx], stops[idx + 1], function (seg, reason) {
+              if (!seg) { failed = true; if (reason && !failReason) { failReason = reason; } }
+              else { segs[idx] = seg; totalDist += seg.distance; totalDur += seg.duration; }
+              done++;
+              if (done === stops.length - 1) { finish(); }
+            });
+          })(i);
+        }
+      }
+      function exitRoute() {
+        activeRoute = null;
+        layerRoute.setGeometries([]);
+        routeStops = null;
+        rebuildMarkers();
+        if (!bannerTouched) { setBannerCollapsed(!!kidMode); }
+        document.getElementById('routeActive').style.display = 'none';
+        focusZone();
+      }
+      function boundsFromPoints(points) {
+        var b = new TMap.LatLngBounds();
+        points.forEach(function (p) { b.extend(p); });
+        return b;
+      }
+      /* 路线站点取景：留出边距，避免首尾站点的标记被地图边缘切掉 */
+      function paddedBounds(stops) {
+        var minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+        stops.forEach(function (s) {
+          if (s.lat < minLat) { minLat = s.lat; }
+          if (s.lat > maxLat) { maxLat = s.lat; }
+          if (s.lng < minLng) { minLng = s.lng; }
+          if (s.lng > maxLng) { maxLng = s.lng; }
+        });
+        return new TMap.LatLngBounds(
+          new TMap.LatLng(minLat - 0.00022, minLng - 0.00030),
+          new TMap.LatLng(maxLat + 0.00022, maxLng + 0.00030)
+        );
+      }
+      function refreshFacilities() { rebuildMarkers(); }
+      ROUTES.forEach(function (r) {
+        var item = document.createElement('button');
+        item.className = 'route-item';
+        var nameEl = document.createElement('span');
+        nameEl.className = 'ri-name';
+        nameEl.style.color = r.color;
+        nameEl.textContent = r.name;
+        var metaEl = document.createElement('span');
+        metaEl.className = 'ri-meta';
+        metaEl.textContent = r.meta;
+        var descEl = document.createElement('span');
+        descEl.className = 'ri-desc';
+        descEl.textContent = r.desc;
+        item.appendChild(nameEl);
+        item.appendChild(metaEl);
+        item.appendChild(descEl);
+        item.addEventListener('click', function () { activateRoute(r); });
+        document.getElementById('routeList').appendChild(item);
+      });
+      document.getElementById('routeExit').addEventListener('click', exitRoute);
+      document.getElementById('routeClose').addEventListener('click', function () {
+        document.getElementById('routePanel').style.display = 'none';
+      });
+      document.getElementById('routeBtn').addEventListener('click', function () {
+        var panel = document.getElementById('routePanel');
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.facility-chip'), function (chip) {
+        chip.addEventListener('click', function () {
+          var type = chip.getAttribute('data-type');
+          facShown[type] = !facShown[type];
+          chip.classList.toggle('on', facShown[type]);
+          refreshFacilities();
+        });
+      });
+
+      /* ===== 叙事层：POI 卡片 / 盒子建筑卡片 ===== */
+      function showPoiCard(poi) {
+        document.getElementById('poiFace').src = poi.mascot || 'assets/icons/mascot-welcome.png';
+        document.getElementById('poiName').textContent = poi.name;
+        // 自定义叙事点没有时间段时，别留一个空的紫色胶囊
+        var slotTxt = (poi.timeSlot || '') + (poi.slotLabel ? ' · ' + poi.slotLabel : '');
+        var slotEl = document.getElementById('poiSlot');
+        slotEl.textContent = slotTxt;
+        slotEl.style.display = slotTxt ? 'inline-block' : 'none';
+        document.getElementById('poiOneLiner').textContent = poi.oneLiner || '';
+        document.getElementById('poiLine').style.display = 'block';
+        document.getElementById('poiLine').textContent = poi.line || '';
+        document.getElementById('poiCardWrap').style.display = 'flex';
+      }
+      function showBoxCard(box) {
+        document.getElementById('poiFace').src = boxIcon(box, !!badgeFound[box.id]);
+        document.getElementById('poiName').textContent = (box.letter ? box.letter + ' · ' : '') + box.name;
+        document.getElementById('poiSlot').style.display = 'inline-block';
+        document.getElementById('poiSlot').textContent = badgeFound[box.id] ? '徽章已收下' : '机器人大道 · 盒子建筑';
+        document.getElementById('poiOneLiner').textContent = box.oneLiner || '';
+        document.getElementById('poiLine').style.display = 'block';
+        document.getElementById('poiLine').textContent = box.line || '';
+        document.getElementById('poiCardWrap').style.display = 'flex';
+      }
+      function showLandmarkCard(m) {
+        document.getElementById('poiFace').src = landmarkIcon(m);
+        document.getElementById('poiName').textContent = m.name;
+        document.getElementById('poiSlot').style.display = 'inline-block';
+        document.getElementById('poiSlot').textContent = '机器大道周边 · 地标';
+        document.getElementById('poiOneLiner').textContent = m.oneLiner || '';
+        document.getElementById('poiLine').style.display = 'block';
+        document.getElementById('poiLine').textContent = m.line || '';
+        document.getElementById('poiCardWrap').style.display = 'flex';
+      }
+      var FAC_LABEL_LONG = { mall: '商场', wc: '洗手间', metro: '地铁口' };
+      function showFacilityCard(f) {
+        var st = FAC_STYLE[f.type] || { color: '#8B5CD6', label: '?' };
+        document.getElementById('poiFace').src = f.unlocated ? routeSVG('?', '#B0AAC6', 96) : routeSVG(st.label, st.color, 96);
+        document.getElementById('poiName').textContent = f.name;
+        var slotEl = document.getElementById('poiSlot');
+        slotEl.style.display = 'inline-block';
+        slotEl.textContent = '服务设施 · ' + (FAC_LABEL_LONG[f.type] || '其他') + (f.unlocated ? ' · 位置待确认' : '');
+        document.getElementById('poiOneLiner').textContent = f.oneLiner || '带孩子出门常要用到的地方';
+        var lineEl = document.getElementById('poiLine');
+        lineEl.textContent = f.line || '';
+        lineEl.style.display = f.line ? 'block' : 'none';
+        document.getElementById('poiCardWrap').style.display = 'flex';
+      }
+      document.getElementById('poiClose').addEventListener('click', function () {
+        document.getElementById('poiCardWrap').style.display = 'none';
+      });
+      document.getElementById('badgeClose').addEventListener('click', function () {
+        document.getElementById('badgeWrap').style.display = 'none';
+      });
+      document.getElementById('poiCardWrap').addEventListener('click', function (e) {
+        if (e.target === this) { this.style.display = 'none'; }
+      });
+      document.getElementById('badgeWrap').addEventListener('click', function (e) {
+        if (e.target === this) { this.style.display = 'none'; }
+      });
+
+      /* ===== 视野：自动聚焦圈定的街区范围 ===== */
+      // 取景范围沿用原来的"大框"：盒子挪到雅丽路后，整条街 + 13 枚盒子正好落在框中央，
+      // 框太小会把街道北侧（雅丽路往上的那段）和两侧建筑切到框外。
+      var zoneBounds = new TMap.LatLngBounds(
+        new TMap.LatLng(22.602600, 114.059900),
+        new TMap.LatLng(22.604200, 114.062100)
+      );
+      function focusZone() {
+        try {
+          try {
+            // 顶部留白避开横幅，避免最北的 F/G 被压在横幅下沿
+            map.fitBounds(zoneBounds, { padding: { top: 150, bottom: 70, left: 70, right: 70 } });
+          } catch (e2) {
+            map.fitBounds(zoneBounds);
+          }
+          if (kidMode) { map.setZoom(Math.min(18, map.getZoom() + 1)); }
+        } catch (e) {}
+      }
+      focusZone();
+
+      var kidMode = false;
+      document.getElementById('modeBtn').addEventListener('click', function () {
+        kidMode = !kidMode;
+        setLayerVisible(labelKid, kidMode);
+        rebuildMarkers();
+        this.textContent = kidMode ? '切换到标准模式' : '切换到儿童模式';
+        if (document.body) { document.body.classList.toggle('kid-mode', kidMode); }
+        if (!bannerTouched) {
+          var banner = document.getElementById('bannerCard');
+          banner.classList.toggle('collapsed', kidMode);
+          document.getElementById('bannerToggle').textContent = kidMode ? '展开' : '收起';
+        }
+        var mascot = document.getElementById('mascotImg');
+        if (mascot) { mascot.src = kidMode ? 'assets/icons/mascot-point.png' : 'assets/icons/mascot-welcome.png'; }
+        focusZone();
+      });
+
+      rebuildMarkers();
+
+      // 点击拾取：用"真实距离最近"判定，避免固定经纬度阈值过大时总命中数组第一个（A）。
+      // 阈值 25m ≈ 一个图标半径，A-F 间距 24m 能清晰区分相邻盒子。
+      map.on('click', function (evt) {
+        if (editPickMode) {
+          // 地点编辑器取点：把点击处写进表单草稿，不动任何已有数据
+          editDraft = { lat: evt.latLng.lat, lng: evt.latLng.lng };
+          editPickMode = false;
+          updateEditCoord();
+          updatePickBtn();
+          return;
+        }
+        if (locMode) {
+          // 微调模式：把当前选中的点移动到点击处，并写入本地记忆
+          var cl = evt.latLng.lat, clng = evt.latLng.lng;
+          if (locTarget) {
+            locTarget.lat = cl; locTarget.lng = clng;
+            locOverrides[locTarget.id] = { lat: cl, lng: clng };
+            locOverrides.__ver = LOC_VER;   // 打上版本戳，文件坐标一更新就整份作废
+            try { localStorage.setItem(LOC_KEY, JSON.stringify(locOverrides)); } catch (e) {}
+            rebuildMarkers();
+            updateLocList();
+          }
+          return;
+        }
+        var lat = evt.latLng.lat, lng = evt.latLng.lng, here = { lat: lat, lng: lng };
+        var cand = [];
+        BOXES.forEach(function (b) { cand.push({ it: b, kind: 'box', d: distMeters(b, here) }); });
+        LANDMARKS.forEach(function (m) { cand.push({ it: m, kind: 'lm', d: distMeters(m, here) }); });
+        POIS.forEach(function (p) { cand.push({ it: p, kind: 'poi', d: distMeters(p, here) }); });
+        // 设施也参与命中：编辑器新加的服务设施点一下至少能看见它叫什么
+        FACILITIES.forEach(function (f) { if (facShown[f.type]) { cand.push({ it: f, kind: 'fac', d: distMeters(f, here) }); } });
+        var best = null;
+        cand.forEach(function (c) { if (!best || c.d < best.d) { best = c; } });
+        if (best && best.d <= 25) {
+          if (best.kind === 'box') { showBoxCard(best.it); collectBox(best.it); }
+          else if (best.kind === 'lm') { showLandmarkCard(best.it); }
+          else if (best.kind === 'fac') { showFacilityCard(best.it); }
+          else { showPoiCard(best.it); }
+        }
+      });
+    } catch (err) {
+      showErr('初始化失败：' + (err && err.message ? err.message : err));
+    }
+  }
+})();
+</script>
+</body>
+</html>

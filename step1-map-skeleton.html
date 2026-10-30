@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="4WSK2Ipz4sdmUko2zdQPJf">
+<head data-page-node-id="trkwGjYzAZqAmt83I2hCrn">
+<meta charset="utf-8" data-page-node-id="BGRMYGJbwgC1FLF31Z4Fts">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="hQCnkdJllU9wC3am8bhLfC">
+<title>坂田机器人小镇 · 儿童版地图骨架</title>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-kuaile/400.css" rel="stylesheet" data-page-node-id="Bex0QyuA1HXRGfrHuGl6bk">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  #map { width: 100%; height: 100vh; }
+  .cute-font { font-family: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .banner {
+    position: absolute; top: 16px; left: 16px; z-index: 1100;
+    background: #FFFFFF; border: 1px solid #ED93B1; border-radius: 16px;
+    padding: 12px 18px; max-width: 300px;
+  }
+  .banner h1 { margin: 0; font-size: 18px; color: #72243E; }
+  .banner p { margin: 4px 0 0; font-size: 12px; color: #993556; line-height: 1.5; }
+  .mode-btn {
+    position: absolute; top: 16px; right: 16px; z-index: 1100;
+    border: none; border-radius: 999px; padding: 10px 18px; font-size: 14px;
+    background: #7F77DD; color: #FFFFFF; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  }
+  .mode-btn:active { transform: scale(.96); }
+  .note {
+    position: absolute; left: 16px; bottom: 16px; z-index: 1100;
+    background: rgba(255,255,255,.92); border: 1px solid #AFA9EC; border-radius: 10px;
+    padding: 6px 12px; font-size: 11px; color: #3C3489; max-width: 320px; line-height: 1.5;
+  }
+  .overlay {
+    position: absolute; inset: 0; z-index: 1200; display: none;
+    align-items: center; justify-content: center; background: #F1EFE8;
+  }
+  .overlay .card {
+    background: #FFFFFF; border: 1px solid #ED93B1; border-radius: 16px;
+    padding: 24px 28px; max-width: 420px; margin: 16px; line-height: 1.7;
+    font-size: 13px; color: #72243E;
+  }
+  .overlay .card h2 { margin: 0 0 8px; font-size: 16px; }
+  .overlay .card code { background: #FBEAF0; border-radius: 4px; padding: 1px 6px; }
+  #errBanner {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 1300;
+    display: none; background: #FCEBEB; border: 1px solid #E24B4A; border-radius: 10px;
+    padding: 8px 14px; font-size: 12px; color: #791F1F; max-width: 70%;
+  }
+  #keyBox { margin-top: 12px; display: none; }
+  #keyInput {
+    width: 100%; box-sizing: border-box; padding: 8px 10px;
+    border: 1px solid #AFA9EC; border-radius: 8px; font-size: 13px; margin-bottom: 8px;
+  }
+  #keySave {
+    border: none; border-radius: 999px; padding: 8px 16px; font-size: 13px;
+    background: #7F77DD; color: #FFFFFF; cursor: pointer;
+  }
+  .link-btn {
+    border: none; background: none; color: #993556; font-size: 12px;
+    cursor: pointer; margin-left: 8px; text-decoration: underline;
+  }
+</style>
+<script src="map-key.local.js"></script>
+<script type="text/javascript">
+  window.KIDS_MAP_KEY = window.KIDS_MAP_KEY || '';
+  window._TMapSecurityConfig = {
+    serviceHost: 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__',
+  };
+  function showErr(msg) {
+    var el = document.getElementById('errBanner');
+    if (!el) { return; }
+    el.textContent = '页面出错：' + msg;
+    el.style.display = 'block';
+  }
+  window.addEventListener('error', function (e) { showErr(e.message || '未知错误'); });
+</script>
+</head>
+<body data-page-node-id="aCIvGwHtG6g7k6AyyD9sGb">
+<div id="map" data-page-node-id="6hPE2mAlPit3u5ew93BYRC"></div>
+<div class="banner" data-page-node-id="xpsRxoaT1nqm8g1nXBDjcY">
+  <h1 class="cute-font" data-page-node-id="kmIJGzXLpIEyrSWhv3MvjD">坂田机器人小镇 · 儿童版</h1>
+  <p data-page-node-id="DavxynkuRODjEA8o8IMPAD">骨架 Demo：卡通化靠「覆盖层」实现，不改底图（默认 key 不支持 mapStyleId）</p>
+</div>
+<button class="mode-btn cute-font" id="modeBtn" data-page-node-id="6hZbBEDLPcRgI0LKfznuu3">切换到儿童模式</button>
+<div class="note" data-page-node-id="Brt7yUyvJ4VqNW4pb8sRbz">坐标已校准（腾讯地图，GCJ-02）；深外龙岗校区在平湖街道未上图，详见 data-pois.json</div>
+<div id="errBanner" data-page-node-id="kbfZBGZMvUrWZ4OF218IfO"></div>
+<div class="overlay" id="fallback" data-page-node-id="a8idVotpfa2x6re0wwYLcr">
+  <div class="card" data-page-node-id="U6ukvLGGNhDvFW93McK89p">
+    <h2 class="cute-font" data-page-node-id="HjUDYZayCHohpoFAbNHeMK">底图没有加载出来</h2>
+    <p id="fallbackMsg">当前是<strong>本地/外部浏览器打开</strong>模式：WorkBuddy 的免 key 代理在这里不存在，所以地图是空白的。</p>
+    <p>解决办法：<br>
+    1. 回到 <strong>WorkBuddy 预览面板</strong>打开本文件（零配置）；<br>
+    2. 在下面粘贴你在腾讯位置服务申请的 Key（存在本浏览器，下次打开自动生效）；<br>
+    3. 或者把 Key 发给小八，帮你写进文件顶部（换电脑也能用）。</p>
+    <div id="keyBox">
+      <input id="keyInput" type="text" placeholder="粘贴腾讯位置服务 Key（32 位）" autocomplete="off">
+      <button id="keySave" class="cute-font">保存并重载</button>
+      <button id="keyClear" class="link-btn">清除已存 Key</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var injected = window._TMapSecurityConfig.serviceHost.indexOf('__WB_') === -1;
+  var savedKey = '';
+  try { savedKey = localStorage.getItem('kidsMapKey') || ''; } catch (e) {}
+  var key = (window.KIDS_MAP_KEY || savedKey || '').trim();
+
+  function showFallback(msg) {
+    var msgEl = document.getElementById('fallbackMsg');
+    if (msg && msgEl) { msgEl.innerHTML = msg; }
+    var input = document.getElementById('keyInput');
+    if (input && key && !input.value) { input.value = key; }
+    document.getElementById('keyBox').style.display = 'block';
+    document.getElementById('fallback').style.display = 'flex';
+  }
+
+  var saveBtn = document.getElementById('keySave');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function () {
+      var v = (document.getElementById('keyInput').value || '').trim();
+      if (!v) { alert('先粘贴 Key 再保存'); return; }
+      try { localStorage.setItem('kidsMapKey', v); } catch (e) {}
+      location.reload();
+    });
+  }
+  var clearBtn = document.getElementById('keyClear');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      try { localStorage.removeItem('kidsMapKey'); } catch (e) {}
+      location.reload();
+    });
+  }
+
+  function loadSdk(keyParam) {
+    var s = document.createElement('script');
+    s.src = 'https://map.qq.com/api/gljs?v=1.exp' + (keyParam ? '&key=' + encodeURIComponent(keyParam) : '');
+    s.onload = init;
+    s.onerror = function () {
+      showFallback('SDK 加载失败：Key 可能无效，或域名白名单没有覆盖当前域名。请检查后重试，或把 Key 发给小八帮你写进文件。');
+    };
+    document.head.appendChild(s);
+  }
+
+  if (injected) { loadSdk(''); return; }
+  if (!key) { showFallback(); return; }
+  delete window._TMapSecurityConfig;
+  loadSdk(key);
+
+  function init() {
+    try {
+      var CENTER = new TMap.LatLng(22.6038, 114.0614);
+      var map = new TMap.Map('map', { center: CENTER, zoom: 16, viewMode: '2D' });
+
+      function robotIcon(color) {
+        var svg =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">' +
+          '<rect x="18" y="32" width="60" height="44" rx="14" fill="' + color + '"/>' +
+          '<circle cx="48" cy="22" r="14" fill="' + color + '"/>' +
+          '<line x1="48" y1="10" x2="48" y2="3" stroke="' + color + '" stroke-width="4"/>' +
+          '<circle cx="48" cy="4" r="4" fill="' + color + '"/>' +
+          '<circle cx="41" cy="22" r="4" fill="#FFFFFF"/><circle cx="55" cy="22" r="4" fill="#FFFFFF"/>' +
+          '<circle cx="41" cy="22" r="2" fill="#26215C"/><circle cx="55" cy="22" r="2" fill="#26215C"/>' +
+          '<rect x="40" y="46" width="16" height="8" rx="4" fill="#FFFFFF"/>' +
+          '<circle cx="48" cy="50" r="2.5" fill="#26215C"/>' +
+          '<rect x="30" y="60" width="36" height="6" rx="3" fill="rgba(255,255,255,.55)"/>' +
+          '</svg>';
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+
+      var POIS = [
+        { id: 'liu6s',   name: '机器人6S店',   lat: 22.604808, lng: 114.061698, color: '#ED93B1' },
+        { id: 'ai6s',    name: '人工智能6S店', lat: 22.603325, lng: 114.061604, color: '#5DCAA5' },
+        { id: 'theater', name: '机器人剧场',   lat: 22.603101, lng: 114.061194, color: '#EF9F27' },
+        { id: 'yungu',   name: '天安云谷',     lat: 22.659950, lng: 114.067420, color: '#378ADD' },
+        { id: 'wuhe',    name: '五和地铁站',   lat: 22.626836, lng: 114.060707, color: '#7F77DD' },
+        { id: 'xuezhu',  name: '雪竹径公园',   lat: 22.651700, lng: 114.083844, color: '#97C459' },
+        { id: 'huawei',  name: '华为坂田基地', lat: 22.650610, lng: 114.059894, color: '#D85A30' }
+      ];
+
+      function markerStyles(size, anchorY) {
+        var styles = {};
+        POIS.forEach(function (p) {
+          styles[p.id] = new TMap.MarkerStyle({
+            width: size,
+            height: size,
+            src: robotIcon(p.color),
+            anchor: { x: size / 2, y: anchorY }
+          });
+        });
+        return styles;
+      }
+
+      function geometries() {
+        return POIS.map(function (p) {
+          return { id: p.id, styleId: p.id, position: new TMap.LatLng(p.lat, p.lng) };
+        });
+      }
+
+      function setLayerVisible(layer, visible) {
+        if (layer.setVisible) { layer.setVisible(visible); }
+        else { layer.setMap(visible ? map : null); }
+      }
+
+      var layerStd = new TMap.MultiMarker({ map: map, styles: markerStyles(40, 40), geometries: geometries() });
+      var layerKid = new TMap.MultiMarker({ map: map, styles: markerStyles(64, 64), geometries: geometries() });
+      setLayerVisible(layerKid, false);
+
+      var labelKid = new TMap.MultiLabel({
+        map: map,
+        styles: {
+          label: new TMap.LabelStyle({
+            color: '#3C3489',
+            size: 13,
+            backgroundColor: '#FFFFFF',
+            borderColor: '#AFA9EC',
+            borderWidth: 1,
+            borderRadius: 8,
+            padding: '4px 8px',
+            offset: { x: 0, y: -72 }
+          })
+        },
+        geometries: POIS.map(function (p) {
+          return { id: 'lbl-' + p.id, styleId: 'label', position: new TMap.LatLng(p.lat, p.lng), content: p.name };
+        })
+      });
+      setLayerVisible(labelKid, false);
+
+      var zone = new TMap.MultiPolygon({
+        map: map,
+        styles: {
+          core: new TMap.PolygonStyle({
+            color: 'rgba(127,119,221,0.12)',
+            borderColor: '#7F77DD',
+            borderWidth: 2
+          })
+        },
+        geometries: [{
+          id: 'robot-ave',
+          styleId: 'core',
+          paths: [
+            new TMap.LatLng(22.605400, 114.060600),
+            new TMap.LatLng(22.605400, 114.062200),
+            new TMap.LatLng(22.602600, 114.062200),
+            new TMap.LatLng(22.602600, 114.060600)
+          ]
+        }]
+      });
+
+      var kidMode = false;
+      document.getElementById('modeBtn').addEventListener('click', function () {
+        kidMode = !kidMode;
+        setLayerVisible(layerStd, !kidMode);
+        setLayerVisible(layerKid, kidMode);
+        setLayerVisible(labelKid, kidMode);
+        this.textContent = kidMode ? '切换到标准模式' : '切换到儿童模式';
+        map.setZoom(kidMode ? 17 : 16);
+      });
+
+      map.on('click', function (evt) {
+        var latLng = evt.latLng;
+        var hit = POIS.find(function (p) {
+          return Math.abs(p.lat - latLng.lat) < 0.0003 && Math.abs(p.lng - latLng.lng) < 0.0003;
+        });
+        if (hit) {
+          alert('机器人 ' + hit.name + ' 跟你打招呼：欢迎来到坂田机器人小镇！（正式版这里弹 Q 版卡片）');
+        }
+      });
+    } catch (err) {
+      showErr('初始化失败：' + (err && err.message ? err.message : err));
+    }
+  }
+})();
+</script>
+</body>
+</html>

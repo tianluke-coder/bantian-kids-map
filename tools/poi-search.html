@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>POI 坐标校准工具</title>
+</head>
+<body>
+<pre id="out">STEP start</pre>
+<script src="../map-key.local.js"></script>
+<script>document.write('<script src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=' + encodeURIComponent(window.KIDS_MAP_KEY || "YOUR_TENCENT_MAP_KEY") + '"><\/scr' + 'ipt>');</script>
+<script>
+(function () {
+  var out = document.getElementById('out');
+  function log(s) { out.textContent = s; }
+
+  var KEYWORDS = [
+    { id: 'liu6s',   keyword: '机器人6S店',              category: 'robot' },
+    { id: 'ai6s',    keyword: '人工智能6S店',            category: 'robot' },
+    { id: 'theater', keyword: '机器人剧场',              category: 'robot' },
+    { id: 'avenue',  keyword: '机器人大道',              category: 'robot' },
+    { id: 'yungu',   keyword: '天安云谷',                category: 'robot' },
+    { id: 'wuhe',    keyword: '五和地铁站',              category: 'metro' },
+    { id: 'sws',     keyword: '深圳外国语学校(集团)龙岗', category: 'school' },
+    { id: 'xuezhu',  keyword: '雪竹径公园',              category: 'park' },
+    { id: 'huawei',  keyword: '华为坂田基地',            category: 'company' }
+  ];
+  var results = [];
+  var finished = false;
+
+  window.addEventListener('error', function (e) {
+    if (!finished) { finished = true; log('PAGE_ERROR ' + e.message + '\n' + JSON.stringify(results)); }
+  });
+
+  setTimeout(function () {
+    try {
+      log('STEP sdk TMap=' + (typeof TMap) + ' service=' + (TMap && TMap.service ? 'yes' : 'no'));
+      if (typeof TMap === 'undefined' || !TMap.service) { throw new Error('SDK 或 service 库未加载'); }
+      var search = new TMap.service.Search({ pageSize: 1 });
+      var center = new TMap.LatLng(22.6005, 114.0600);
+
+      function run(i) {
+        if (i >= KEYWORDS.length) {
+          finished = true;
+          log('COMPLETE\n' + JSON.stringify(results, null, 1));
+          return;
+        }
+        var k = KEYWORDS[i];
+        log('STEP searching ' + (i + 1) + '/' + KEYWORDS.length + ' ' + k.keyword);
+        search.searchNearby({ keyword: k.keyword, center: center, radius: 6000, pageSize: 1 })
+          .then(function (res) {
+            var first = res && res.data && res.data[0];
+            results.push({
+              id: k.id, keyword: k.keyword, category: k.category,
+              found: !!first,
+              title: first ? first.title : null,
+              address: first ? first.address : null,
+              lat: first && first.location ? first.location.lat : null,
+              lng: first && first.location ? first.location.lng : null
+            });
+            run(i + 1);
+          })
+          .catch(function (err) {
+            results.push({ id: k.id, keyword: k.keyword, category: k.category, found: false, error: String(err && err.message ? err.message : err) });
+            run(i + 1);
+          });
+      }
+      run(0);
+    } catch (e) {
+      finished = true;
+      log('SETUP_ERROR ' + e.message + '\n' + JSON.stringify(results));
+    }
+  }, 1000);
+
+  setTimeout(function () {
+    if (!finished) { finished = true; log('TIMEOUT\n' + JSON.stringify(results, null, 1)); }
+  }, 24000);
+})();
+</script>
+</body>
+</html>

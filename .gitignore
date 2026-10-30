@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# WorkBuddy 项目数据 / 应用标记
+.workbuddy/
+*.genie
+
+# 依赖与构建产物
+node_modules/
+
+# 开发过程截图（不参与发布，也别进库）
+screenshot-*.png
+
+# 高清素材源与生成源：页面只用 assets/icons 里的压缩图
+assets/icons-src/
+assets/imggen/
+
+# 本机的地图 Key（含密钥，绝不进库；模板见 map-key.local.example.js）
+map-key.local.js

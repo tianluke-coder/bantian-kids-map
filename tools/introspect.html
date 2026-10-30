@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Search API 内省</title>
+</head>
+<body>
+<pre id="out">STEP start</pre>
+<script src="../map-key.local.js"></script>
+<script>document.write('<script src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=' + encodeURIComponent(window.KIDS_MAP_KEY || "YOUR_TENCENT_MAP_KEY") + '"><\/scr' + 'ipt>');</script>
+<script>
+(function () {
+  var out = document.getElementById('out');
+  setTimeout(function () {
+    try {
+      var s = new TMap.service.Search({ pageSize: 1 });
+      var proto = Object.getPrototypeOf(s);
+      var names = Object.getOwnPropertyNames(proto).filter(function (n) { return n !== 'constructor'; });
+      out.textContent = 'METHODS: ' + names.join(', ');
+    } catch (e) {
+      out.textContent = 'ERROR ' + e.message;
+    }
+  }, 1200);
+})();
+</script>
+</body>
+</html>
